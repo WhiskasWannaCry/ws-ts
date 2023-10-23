@@ -28,7 +28,6 @@ const Nav = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
   height: 500px;
   padding: 10px;

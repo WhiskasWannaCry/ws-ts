@@ -8,10 +8,18 @@ height: 100%;
 width: 80%;
 `
 
-const Home = () => {
+const Posts = styled.div`
+ width: 100%;
+ border: 1px solid #dae2db40;
+`
+import {Post} from '../types'
+
+const Home = (props:{ posts:Post }) => {
   return (
     <Container>
-      It's Home page!
+      <Posts>
+
+      </Posts>
     </Container>
   )
 }
