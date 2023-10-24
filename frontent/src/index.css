@@ -4,6 +4,8 @@
   padding: 0;
   background-color: #161616;
   color: #f9f9f9;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
 }
 
 html,body,#root{
