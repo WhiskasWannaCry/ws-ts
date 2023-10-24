@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import React from 'react'
 import { PostType } from '../types'
 import Post from '../shared/Post'
+import Authorization from '../shared/Authorization'
 
 const Container = styled.div`
 display: flex;
@@ -15,6 +16,7 @@ flex-direction: column;
 align-items: center;
  width: 70%;
  padding: 8%;
+ padding-top: 0px;
  border: 1px solid #dae2db40;
 `
 
@@ -26,6 +28,7 @@ const Home = (props: { posts: PostType[] }) => {
           <Post key={post.whoPostedID} post={post}></Post>
         )) : null}
       </Posts>
+      <Authorization></Authorization>
     </Container>
   )
 }

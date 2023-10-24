@@ -57,7 +57,7 @@ const Post = (props: { post: PostType }) => {
       <Like>
         
       </Like>
-      <Likes><b>{props.post.likes.length} отметок "Нравится"</b></Likes>
+      <Likes><b>{props.post.likes} отметок "Нравится"</b></Likes>
       <Username><b>{props.post.whoPostedID}:</b></Username>
       <Text>{props.post.text}</Text>
     </Container>
