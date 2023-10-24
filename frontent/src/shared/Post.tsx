@@ -8,7 +8,7 @@ flex-direction: column;
 margin: 10px;
   width: 100%;
   min-height: 400px;
-  border: 1px solid #dae2db40;
+  border: 1px solid #dae2db22;
   padding: 20px;
   border-radius: 4px;
 `

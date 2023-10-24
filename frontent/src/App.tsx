@@ -18,7 +18,7 @@ const Container = styled.div`
 const HR = styled.div`
 width: 1px;
   height: 100%;
-background-color: #dae2db40;
+background-color: #dae2db1d;
 `
 
 const App = () => {
@@ -26,11 +26,23 @@ const App = () => {
   const [currentUser, setCurrentUser] = useState<UserType>({
     id: "0",
     username: 'Guest',
-    age: 0,
     image: '',
     password: '',
     email: "",
   })
+
+  const [activeLink, setActiveLink] = useState<string>('Home')
+
+  const activeLinkLS = localStorage.getItem("activeLink")
+  useEffect(() => {
+    if(!activeLinkLS) {
+      localStorage.setItem("activeLink", "Home")
+      setActiveLink("Home")
+    } else {
+      setActiveLink(activeLinkLS)
+    }
+    console.log(activeLinkLS)
+  },[])
 
 
   const getData = async () => {
@@ -49,7 +61,7 @@ const App = () => {
 
   return (
     <Container>
-      <MainMenu></MainMenu>
+      <MainMenu activeLink={activeLink} setActiveLink={setActiveLink}></MainMenu>
       <HR></HR>
       <Context.Provider value={{ currentUser, setCurrentUser }}>
         <Routes>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useContext } from 'react';
-import {useSomeContext} from '../shared/Context'
+import { useSomeContext } from '../shared/Context'
 
 const Container = styled.div`
+  display: flex;
+  flex-grow: 1;
   padding: 10px;
-  width: 100%;
   height: 100%;
 `
 
@@ -106,14 +107,14 @@ color: #5f5f99;
 
 
 const Authorization = () => {
-  const {currentUser, setCurrentUser} = useSomeContext();
-  const [isSignIn,setIsSignIn] = useState<Boolean>(false)
-  console.log(currentUser)
+  const { currentUser, setCurrentUser } = useSomeContext();
+  const [isSignIn, setIsSignIn] = useState<Boolean>(false)
+  // console.log(currentUser)
   return (
     <Container>
-      {currentUser.id === '0'? (
+      {currentUser.id === '0' ? (
         <SignContainer>
-          {isSignIn? (
+          {isSignIn ? (
             <SignInContainer>
               <SignTitle>Sign In</SignTitle>
               <InputLabel>E-mail*:</InputLabel>
@@ -124,7 +125,7 @@ const Authorization = () => {
               <Ask>Haven't account?</Ask>
               <Switcher onClick={() => setIsSignIn(!isSignIn)}>Sign Up</Switcher>
             </SignInContainer>
-          ):(
+          ) : (
             <SignUpContainer>
               <SignTitle>Sign Up</SignTitle>
               <InputLabel>Name*:</InputLabel>
@@ -141,7 +142,7 @@ const Authorization = () => {
             </SignUpContainer>
           )}
         </SignContainer>
-      ):null } 
+      ) : null}
     </Container>// Current user profile should be here
   )
 }

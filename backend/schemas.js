@@ -10,8 +10,8 @@ const post = new Schema({
 
 const user = new Schema({
   name: String,
-  age: String,
-  title: String,
+  email: String,
+  password: String,
   image: String,
 });
 

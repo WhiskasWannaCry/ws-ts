@@ -10,7 +10,6 @@ export type UserType = {
   id: string,
   email: string,
   username: string,
-  age: number,
   image: string,
   password: string,
 }
