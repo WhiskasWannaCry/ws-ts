@@ -18,6 +18,11 @@ try {
 
 app.use(cors())
 
+// Function to serve all static files
+// inside public directory.
+app.use('/posts_images', express.static('C:/TypeScriptProjects/ws-ts/backend/posts_images'));
+app.use('/users_images', express.static('C:/TypeScriptProjects/ws-ts/backend/users_images'));
+
 app.listen(process.env.PORT, () => {
   console.log(`EXPRESS SERVER listening on port ${process.env.PORT}`)
 })
