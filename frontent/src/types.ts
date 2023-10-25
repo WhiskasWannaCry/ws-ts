@@ -11,5 +11,5 @@ export type UserType = {
   email: string,
   username: string,
   image: string,
-  password: string,
+  password: string | null,
 }

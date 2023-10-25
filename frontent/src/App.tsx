@@ -7,6 +7,8 @@ import MainMenu from './components/MainMenu';
 import { PostType, UserType } from './types'
 import { Context } from './shared/Context';
 
+
+
 const { getPosts } = require('./utils')
 
 
@@ -29,11 +31,12 @@ const App = () => {
     image: '',
     password: '',
     email: "",
-  })
+  }) // Default guest account
 
   const [activeLink, setActiveLink] = useState<string>('Home')
 
   const activeLinkLS = localStorage.getItem("activeLink")
+  const currentUserLS = localStorage.getItem("currentUser")
   useEffect(() => {
     if(!activeLinkLS) {
       localStorage.setItem("activeLink", "Home")
@@ -41,7 +44,12 @@ const App = () => {
     } else {
       setActiveLink(activeLinkLS)
     }
-    console.log(activeLinkLS)
+    if(!currentUserLS) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser))
+      setCurrentUser(currentUser)
+    } else {
+      setCurrentUser(JSON.parse(currentUserLS))
+    }
   },[])
 
 
@@ -58,7 +66,6 @@ const App = () => {
       setPosts(data)
     })
   }, [])
-
   return (
     <Container>
       <MainMenu activeLink={activeLink} setActiveLink={setActiveLink}></MainMenu>

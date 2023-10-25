@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useContext } from 'react';
 import { useSomeContext } from '../shared/Context'
+import { googleLogout } from '@react-oauth/google';
+import axios from 'axios';
+import GoogleAuth from './GoogleAuth';
+import { UserType } from '../types';
 
 const Container = styled.div`
   display: flex;
-  flex-grow: 1;
+  flex-direction: column;
+  width: 30%;
   padding: 10px;
   height: 100%;
 `
@@ -105,11 +110,80 @@ color: #5f5f99;
   }
 `
 
+const GoogleTitle = styled.span`
+  color:#666a7e;
+  font-size: 12px;
+  margin-top: 16px;
+`
+
+const AccountInfo = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 16px;
+border: 1px solid #dae2db40;
+`
+
+const ImageAndName = styled.div`
+display: flex;
+width: 100%;
+justify-content: space-around;
+align-items: center;
+`
+
+const AccountImageContainer = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+width: 30%;
+`
+
+const AccountImage = styled.img`
+width: 100%;
+`
+
+const AccountName = styled.span`
+  width: 50%;
+`
+
+const AccountEmail = styled.span`
+  margin-top: 8px;
+  width: 100%;
+  color: #dae2db65;
+`
+
+const LogoutBtn = styled.button`
+  cursor: pointer;
+  padding: 16px;
+  border: 1px solid #dae2db40;
+  background-color: #373945;
+  border-radius: 4px;
+  &:hover {
+    background-color: #666a7e;
+  }
+`
 
 const Authorization = () => {
   const { currentUser, setCurrentUser } = useSomeContext();
   const [isSignIn, setIsSignIn] = useState<Boolean>(false)
   // console.log(currentUser)
+
+  // log out function to log the user out of google and set the profile array to null
+  const logOutWithGoogle = () => {
+    const guest: UserType = {
+      id: "0",
+      username: 'Guest',
+      image: '',
+      password: '',
+      email: "",
+    }
+    googleLogout();
+
+    // When user logout, return to default guest account to state and local storage
+    setCurrentUser(guest)
+    localStorage.setItem("currentUser", JSON.stringify(guest))
+  }
+
   return (
     <Container>
       {currentUser.id === '0' ? (
@@ -124,6 +198,8 @@ const Authorization = () => {
               <SignInButton>Sign In</SignInButton>
               <Ask>Haven't account?</Ask>
               <Switcher onClick={() => setIsSignIn(!isSignIn)}>Sign Up</Switcher>
+              <GoogleTitle>Or Sing In with Google Account</GoogleTitle>
+              <GoogleAuth setCurrentUser={setCurrentUser}></GoogleAuth>
             </SignInContainer>
           ) : (
             <SignUpContainer>
@@ -142,7 +218,20 @@ const Authorization = () => {
             </SignUpContainer>
           )}
         </SignContainer>
-      ) : null}
+      ) : (
+        <AccountInfo>
+          <ImageAndName>
+            <AccountImageContainer>
+              <AccountImage src={currentUser.image} alt="user image" />
+            </AccountImageContainer>
+            <AccountName>{currentUser.username}</AccountName>
+          </ImageAndName>
+          <AccountEmail>{currentUser.email}</AccountEmail>
+          <br />
+          <br />
+          <LogoutBtn onClick={logOutWithGoogle}>Log out</LogoutBtn>
+        </AccountInfo>
+      )}
     </Container>// Current user profile should be here
   )
 }
