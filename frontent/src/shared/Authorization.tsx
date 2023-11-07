@@ -182,7 +182,7 @@ const Authorization = () => {
   // log out function to log the user out of google and set the profile array to null
   const logOutWithGoogle = () => {
     const guest: UserType = {
-      id: "0",
+      _id: "0",
       username: 'Guest',
       image: '',
       password: '',
@@ -228,7 +228,7 @@ const Authorization = () => {
       return
     }
     console.log("Succesful validation on client")
-    const user: UserType = { username: name, email, password, id: String(Date.now()), image: "" }
+    const user: UserType = { username: name, email, password, _id: String(Date.now()), image: "" }
 
     // Now not working
     signUpUser(user)
@@ -244,7 +244,7 @@ const Authorization = () => {
 
   return (
     <Container>
-      {currentUser.id === '0' ? (
+      {currentUser._id === '0' ? (
         <SignContainer>
           {isSignIn ? (
             <SignInContainer>

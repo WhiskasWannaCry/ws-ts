@@ -61,7 +61,8 @@ const Post = (props: { post: PostType }) => {
   const imageURL = `http://localhost:5000/${post.image}`
   const { currentUser, setCurrentUser } = useSomeContext();
   const { modalOpened, setModalOpened } = useSomeContext();
-
+  
+  console.log(post._id)
   return (
     <Container key={post.authorID}>
       <Username><b>{post.authorID}</b></Username>
@@ -74,9 +75,13 @@ const Post = (props: { post: PostType }) => {
       <Likes><b>{post.likes} отметок "Нравится"</b></Likes>
       <Username><b>{post.authorID}:</b></Username>
       <Text>{post.text}</Text>
-      <Comments onClick={() => setModalOpened(true)}>Посмотреть все комментарии ({post.comments.length})</Comments>
-      {currentUser.id !== '0' ? <AddComment></AddComment> : null}
-      {modalOpened ? <CommentsList post={post}></CommentsList> : null}
+      <Comments onClick={() => setModalOpened(prev => ({
+        ...prev,
+        opened:true,
+        postId:post._id,
+      }))}>Посмотреть все комментарии ({post.comments.length})</Comments>
+      {currentUser._id !== '0' ? <AddComment></AddComment> : null}
+      {modalOpened.opened && modalOpened.postId === post._id ? <CommentsList post={post}></CommentsList> : null}
     </Container>
   )
 }

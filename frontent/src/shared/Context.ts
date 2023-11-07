@@ -1,5 +1,5 @@
 import { createContext, useContext, Dispatch, SetStateAction } from 'react';
-import { UserType } from '../types';
+import { UserType, modalOpenCommentType } from '../types';
 
 type contextType = {
   // Context of current logined user
@@ -7,8 +7,8 @@ type contextType = {
   setCurrentUser: Dispatch<SetStateAction<UserType>>;
 
   // Context of modal windows
-  modalOpened: Boolean;
-  setModalOpened: Dispatch<SetStateAction<Boolean>>;
+  modalOpened: modalOpenCommentType;
+  setModalOpened: Dispatch<SetStateAction<modalOpenCommentType>>;
 };
 
 export const Context = createContext<contextType>({} as contextType);

@@ -20,22 +20,23 @@ display: flex;
 justify-content: flex-end;
 width: 100%;
 padding: 16px;
-background-color: #00000081;
+background-color: #00000000;
 `
 
 const Close = styled.span`
 cursor: pointer;
 width: 10px;
-background-color: #0000002f;
+background-color: #00000000;
 font-size: 24px;
 `
 
 const PostContainer = styled.div`
 display: flex;
  border: 1px solid #dae2db1c;
- background-color: #00000081;
+ background-color: #00000000;
  width: 80%;
  height: calc(55vw - 5vw); 
+ max-height: 80vh;
 `
 
 const ImageContainer = styled.div`
@@ -97,7 +98,7 @@ display: flex;
 width: 100%;
 `
 
-const CommentsList = (props: { post:PostType }) => {
+const CommentsList = (props: { post: PostType }) => {
   const { setModalOpened } = useSomeContext()
   const { post } = props;
   const imageURL = `http://localhost:5000/${post.image}`
@@ -105,7 +106,10 @@ const CommentsList = (props: { post:PostType }) => {
   return (
     <Container>
       <CloseModal>
-        <Close onClick={() => setModalOpened(false)}><b>x</b></Close>
+        <Close onClick={() => setModalOpened(prev => ({
+          ...prev,
+          opened: false,
+        }))}><b>x</b></Close>
       </CloseModal>
       <PostContainer>
         <ImageContainer>
@@ -114,7 +118,7 @@ const CommentsList = (props: { post:PostType }) => {
         <InfoContainer>
           <PostAuthor>{post.authorID}</PostAuthor>
           <Comments>
-            {post.comments.length? (
+            {post.comments.length ? (
               post.comments.map(comment => (
                 <Comment>
                   <CommentAuthor><b>{comment.authorID}</b></CommentAuthor>

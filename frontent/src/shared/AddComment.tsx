@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import React, { useState } from "react";
+import { addNewComment } from '../utils'
+import { Comment } from '../types'
 
 const Container = styled.div`
   display: flex;
@@ -29,15 +31,35 @@ const AddNewCommentBtn = styled.button`
 `
 
 const AddComment = () => {
-  const [commentText, setCommentText] = useState<string>("")
+  const [commentText, setCommentText] = useState<Comment>({
+    id: '',
+    authorID: '',
+    text: '',
+  })
+
+  let userLS = localStorage.getItem("currentUser")
+  if(userLS !== null) {
+    userLS = JSON.parse(userLS)
+  }
+
+  const newComment = async () => {
+    // addNewComment(commentText)
+    console.log(userLS)
+  }
 
   return (
     <Container>
       <Input placeholder='Добавьте комментарий'
-        onChange={((e) => setCommentText((e!.target as HTMLInputElement)!.value))}
-        value={commentText}>
+        onChange={(e) => setCommentText(prev => ({
+          ...prev,
+          id: String(Date.now()),
+          //NOW NOT WORKING
+          // authorID: userLS ? userLS._id : "",
+          text: (e!.target as HTMLInputElement)!.value,
+        }))}
+        value={commentText.text}>
       </Input>
-      {commentText ? <AddNewCommentBtn>Добавить комментарий</AddNewCommentBtn> : null}
+      {commentText ? <AddNewCommentBtn onClick={newComment}>Добавить комментарий</AddNewCommentBtn> : null}
     </Container>
   )
 }

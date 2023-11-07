@@ -1,10 +1,11 @@
-interface Comment {
-    id: String,
-    authorID: String,
-    text: String,
+export interface Comment {
+    id: string,
+    authorID: string,
+    text: string,
 }
 
 export type PostType = {
+  _id: string,
   authorID:string,
   text:string,
   likes:number,
@@ -14,9 +15,14 @@ export type PostType = {
 }
 
 export type UserType = {
-  id: string,
+  _id: string,
   email: string,
   username: string,
   image: string,
-  password: string | null,
+  password: string,
+}
+
+export type modalOpenCommentType = {
+  opened: Boolean,
+  postId: string,
 }

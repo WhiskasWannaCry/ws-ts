@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home';
 import Contacts from './pages/Contacts';
 import MainMenu from './components/MainMenu';
-import { PostType, UserType } from './types'
+import { PostType, UserType, modalOpenCommentType } from './types'
 import { Context, useSomeContext } from './shared/Context';
 
 
@@ -26,9 +26,12 @@ background-color: #dae2db1d;
 const App = () => {
   const [posts, setPosts] = useState<PostType[]>([])
 
-  const [modalOpened, setModalOpened] = useState<Boolean>(true)
+  const [modalOpened, setModalOpened] = useState<modalOpenCommentType>({
+    opened: false,
+    postId: '',
+  })
   const [currentUser, setCurrentUser] = useState<UserType>({
-    id: "0",
+    _id: "0",
     username: 'Guest',
     image: '',
     password: '',
@@ -55,14 +58,14 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    if (modalOpened) {
+    if (modalOpened.opened) {
       // Запретить скроллинг при открытии модального окна
       document.body.style.overflow = "hidden";
     } else {
       // Разрешить скроллинг при закрытии модального окна
       document.body.style.overflow = "auto";
     }
-  
+
     return () => {
       // Восстановить скроллинг при размонтировании компонента
       document.body.style.overflow = "auto";

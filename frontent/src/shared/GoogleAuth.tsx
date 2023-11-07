@@ -39,14 +39,16 @@ const GoogleAuth = (props: { setCurrentUser: React.Dispatch<React.SetStateAction
           })
           .then((res) => {
             setProfile(res.data);
-            const { email, name, picture, id, } = res.data
-            props.setCurrentUser({
-              id,
+            const { email, name, picture, _id, } = res.data
+            const newCurrentUser = {
+              _id,
               email,
               username: name,
               image: picture,
-              password: null,
-            })
+              password: '',
+            }
+            props.setCurrentUser(newCurrentUser)
+            localStorage.setItem("currentUser",JSON.stringify(newCurrentUser))
           })
           .catch((err) => console.log(err));
       }

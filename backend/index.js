@@ -17,6 +17,7 @@ try {
 }
 
 app.use(cors());
+app.use(express.json());
 
 // Function to serve all static files
 // inside public directory.
@@ -44,7 +45,8 @@ app.get("/get_posts", async (req, res) => {
   res.send(newPosts);
 });
 
-// Now not working
+
+// Need more logic
 app.post("/sign_up_user", async (req, res) => {
   console.log(req.body)
 });
