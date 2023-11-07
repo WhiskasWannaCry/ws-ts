@@ -13,7 +13,7 @@ export const signUpUser = async (user: UserType) => {
   return data
 }
 
-export const addNewComment = async (comment: Comment) => {
-  const data = await axios.post('http://localhost:5000/add_new_comment', comment)
+export const addNewComment = async (comment: Comment, postID:string) => {
+  const data = await axios.post('http://localhost:5000/add_new_comment', {comment,postID})
   return data
 }

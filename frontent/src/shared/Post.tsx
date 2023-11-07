@@ -1,6 +1,6 @@
-import react, { useState } from 'react'
+import react, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { PostType } from '../types'
+import { Comment, PostType } from '../types'
 import { useSomeContext } from "../shared/Context"
 import AddComment from './AddComment'
 import CommentsList from '../ModalWindows/CommetsList'
@@ -61,8 +61,12 @@ const Post = (props: { post: PostType }) => {
   const imageURL = `http://localhost:5000/${post.image}`
   const { currentUser, setCurrentUser } = useSomeContext();
   const { modalOpened, setModalOpened } = useSomeContext();
-  
-  console.log(post._id)
+  const [postComments, setPostComments] = useState<Array<Comment>>([])
+
+  useEffect(() => {
+    setPostComments(post.comments)
+  },[])
+
   return (
     <Container key={post.authorID}>
       <Username><b>{post.authorID}</b></Username>
@@ -79,9 +83,9 @@ const Post = (props: { post: PostType }) => {
         ...prev,
         opened:true,
         postId:post._id,
-      }))}>Посмотреть все комментарии ({post.comments.length})</Comments>
-      {currentUser._id !== '0' ? <AddComment></AddComment> : null}
-      {modalOpened.opened && modalOpened.postId === post._id ? <CommentsList post={post}></CommentsList> : null}
+      }))}>Посмотреть все комментарии ({postComments.length})</Comments>
+      {currentUser._id !== '0' ? <AddComment postID={post._id} setPostComments={setPostComments}></AddComment> : null}
+      {modalOpened.opened && modalOpened.postId === post._id ? <CommentsList post={post} postComments={postComments}></CommentsList> : null}
     </Container>
   )
 }

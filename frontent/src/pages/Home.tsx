@@ -26,7 +26,7 @@ const Home = (props: { posts: PostType[] }) => {
   return (
     <Container>
       <Posts>
-        {props.posts.length ? props.posts.map((post:PostType) => (
+        {props.posts?.length ? props.posts.map((post:PostType) => (
           <Post key={post.authorID} post={post}></Post>
         )) : null}
       </Posts>

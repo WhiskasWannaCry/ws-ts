@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import React, { useState } from "react";
 import { addNewComment } from '../utils'
+import { useSomeContext } from "./Context";
 import { Comment } from '../types'
+import { Dispatch, SetStateAction  } from 'react'
+
 
 const Container = styled.div`
   display: flex;
@@ -30,34 +33,46 @@ const AddNewCommentBtn = styled.button`
   font-size: 10px;
 `
 
-const AddComment = () => {
-  const [commentText, setCommentText] = useState<Comment>({
-    id: '',
-    authorID: '',
-    text: '',
-  })
+const AddComment = (props: { postID: string, setPostComments:Dispatch<SetStateAction<Array<Comment>>>  }) => {
+  const { currentUser, setCurrentUser } = useSomeContext()
+  const [commentText, setCommentText] = useState<string>('')
 
-  let userLS = localStorage.getItem("currentUser")
-  if(userLS !== null) {
-    userLS = JSON.parse(userLS)
-  }
+  let userLS = JSON.parse(localStorage.getItem("currentUser")!)
+
 
   const newComment = async () => {
-    // addNewComment(commentText)
-    console.log(userLS)
+    if(!commentText) {
+      alert("Incorrect comment!")
+      return
+    }
+    if (!userLS) {
+      alert("You is not a user!")
+      setCurrentUser({
+        _id: "0",
+        username: 'Guest',
+        image: '',
+        password: '',
+        email: "",
+      })
+      return
+    }
+    const comment: Comment = {
+      id: String(Date.now()),
+      authorID: userLS._id,
+      text: commentText,
+    }
+    addNewComment(comment, props.postID).then(res => {
+      const { data } = res;
+      props.setPostComments(data)
+    })
+    setCommentText("")
   }
 
   return (
     <Container>
       <Input placeholder='Добавьте комментарий'
-        onChange={(e) => setCommentText(prev => ({
-          ...prev,
-          id: String(Date.now()),
-          //NOW NOT WORKING
-          // authorID: userLS ? userLS._id : "",
-          text: (e!.target as HTMLInputElement)!.value,
-        }))}
-        value={commentText.text}>
+        onChange={(e) => setCommentText((e!.target as HTMLInputElement)!.value)}
+        value={commentText}>
       </Input>
       {commentText ? <AddNewCommentBtn onClick={newComment}>Добавить комментарий</AddNewCommentBtn> : null}
     </Container>

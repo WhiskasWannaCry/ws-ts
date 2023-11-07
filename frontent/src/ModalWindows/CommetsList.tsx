@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useSomeContext } from '../shared/Context'
-import { PostType } from '../types'
+import { Comment,PostType } from '../types'
 
 const Container = styled.div`
 position: fixed;
@@ -68,16 +68,23 @@ font-weight: 800;
 padding: 16px;
 `
 
-const Comments = styled.div`
+const CommentsContainer = styled.div`
 display: flex;
 flex-direction: column;
 overflow: auto;
 width: 100%;
 height: 100%;
 padding: 16px;
+&::-webkit-scrollbar {
+  width: 12px;               /* ширина всей полосы прокрутки */
+}
+&::-webkit-scrollbar-thumb {
+  background-color: #dae2db50;    /* цвет бегунка */
+  border-radius: 20px;       /* округлось бегунка */
+}
 `
 
-const Comment = styled.div`
+const CommentWrapper = styled.div`
 display: flex;
 flex-direction: column;
 width: 100%;
@@ -98,9 +105,9 @@ display: flex;
 width: 100%;
 `
 
-const CommentsList = (props: { post: PostType }) => {
+const CommentsList = (props: { post: PostType,  postComments:Array<Comment> }) => {
   const { setModalOpened } = useSomeContext()
-  const { post } = props;
+  const { post,postComments } = props;
   const imageURL = `http://localhost:5000/${post.image}`
   console.log(post)
   return (
@@ -117,16 +124,16 @@ const CommentsList = (props: { post: PostType }) => {
         </ImageContainer>
         <InfoContainer>
           <PostAuthor>{post.authorID}</PostAuthor>
-          <Comments>
-            {post.comments.length ? (
-              post.comments.map(comment => (
-                <Comment>
+          <CommentsContainer>
+            {postComments.length ? (
+              postComments.map(comment => (
+                <CommentWrapper>
                   <CommentAuthor><b>{comment.authorID}</b></CommentAuthor>
                   <Text>{comment.text}</Text>
-                </Comment>
+                </CommentWrapper>
               ))
             ) : (null)}
-          </Comments>
+          </CommentsContainer>
         </InfoContainer>
       </PostContainer>
     </Container>
