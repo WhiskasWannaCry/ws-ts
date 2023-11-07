@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Contacts from './pages/Contacts';
 import MainMenu from './components/MainMenu';
 import { PostType, UserType } from './types'
-import { Context } from './shared/Context';
+import { Context, useSomeContext } from './shared/Context';
 
 
 
@@ -25,6 +25,8 @@ background-color: #dae2db1d;
 
 const App = () => {
   const [posts, setPosts] = useState<PostType[]>([])
+
+  const [modalOpened, setModalOpened] = useState<Boolean>(true)
   const [currentUser, setCurrentUser] = useState<UserType>({
     id: "0",
     username: 'Guest',
@@ -38,20 +40,34 @@ const App = () => {
   const activeLinkLS = localStorage.getItem("activeLink")
   const currentUserLS = localStorage.getItem("currentUser")
   useEffect(() => {
-    if(!activeLinkLS) {
+    if (!activeLinkLS) {
       localStorage.setItem("activeLink", "Home")
       setActiveLink("Home")
     } else {
       setActiveLink(activeLinkLS)
     }
-    if(!currentUserLS) {
+    if (!currentUserLS) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser))
       setCurrentUser(currentUser)
     } else {
       setCurrentUser(JSON.parse(currentUserLS))
     }
-  },[])
+  }, [])
 
+  useEffect(() => {
+    if (modalOpened) {
+      // Запретить скроллинг при открытии модального окна
+      document.body.style.overflow = "hidden";
+    } else {
+      // Разрешить скроллинг при закрытии модального окна
+      document.body.style.overflow = "auto";
+    }
+  
+    return () => {
+      // Восстановить скроллинг при размонтировании компонента
+      document.body.style.overflow = "auto";
+    };
+  }, [modalOpened]);
 
   const getData = async () => {
     try {
@@ -68,9 +84,9 @@ const App = () => {
   }, [])
   return (
     <Container>
-      <MainMenu activeLink={activeLink} setActiveLink={setActiveLink}></MainMenu>
-      <HR></HR>
-      <Context.Provider value={{ currentUser, setCurrentUser }}>
+      <Context.Provider value={{ currentUser, setCurrentUser, modalOpened, setModalOpened }}>
+        <MainMenu activeLink={activeLink} setActiveLink={setActiveLink}></MainMenu>
+        <HR></HR>
         <Routes>
           <Route path='/' element={<Home posts={posts}></Home>}></Route>
           <Route path='/Contacts' element={<Contacts></Contacts>}></Route>

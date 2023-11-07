@@ -6,6 +6,7 @@ import { googleLogout } from '@react-oauth/google';
 import axios from 'axios';
 import GoogleAuth from './GoogleAuth';
 import { UserType } from '../types';
+const { signUpUser } = require('../utils')
 
 const Container = styled.div`
   display: flex;
@@ -84,7 +85,7 @@ border-radius: 4px;
 padding: 4px;
 `
 
-const SignInButton = styled.button`
+const SignButton = styled.button`
   cursor: pointer;
   margin-top: 12px;
   width: 40%;
@@ -111,9 +112,13 @@ color: #5f5f99;
 `
 
 const GoogleTitle = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color:#666a7e;
   font-size: 12px;
   margin-top: 16px;
+  width: 100%;
 `
 
 const AccountInfo = styled.div`
@@ -132,8 +137,11 @@ align-items: center;
 `
 
 const AccountImageContainer = styled.div`
+cursor: pointer;
 display: flex;
 justify-content: center;
+padding: 4px;
+border: 1px solid #dae2db40;
 align-items: center;
 width: 30%;
 `
@@ -167,7 +175,10 @@ const Authorization = () => {
   const { currentUser, setCurrentUser } = useSomeContext();
   const [isSignIn, setIsSignIn] = useState<Boolean>(false)
   // console.log(currentUser)
-
+  const [name, setName] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [repassword, setRepassword] = useState<string>("")
   // log out function to log the user out of google and set the profile array to null
   const logOutWithGoogle = () => {
     const guest: UserType = {
@@ -184,6 +195,53 @@ const Authorization = () => {
     localStorage.setItem("currentUser", JSON.stringify(guest))
   }
 
+  const clearFormStates = () => {
+    // setFormStates("")
+    setName("")
+    setEmail("")
+    setPassword("")
+    setRepassword("")
+  }
+
+  const sendSignUpUser = async (user: UserType) => {
+    try {
+      const data = await signUpUser(user);
+      return data
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const signUp = () => {
+    // Here must be sign up logic
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!name || !email || !password || !repassword) {
+      alert("Incorrect value of fields")
+      return
+    }
+    if (password !== repassword) {
+      alert("Password and repeat password should be match")
+      return
+    }
+    if (!emailRegex.test(email)) {
+      alert("Incorrect e-mail")
+      return
+    }
+    console.log("Succesful validation on client")
+    const user: UserType = { username: name, email, password, id: String(Date.now()), image: "" }
+
+    // Now not working
+    signUpUser(user)
+  }
+
+  const signIn = () => {
+    // Here must be sign in logic
+    if (!email || !password) {
+      alert("Incorrect value of fields")
+      return
+    }
+  }
+
   return (
     <Container>
       {currentUser.id === '0' ? (
@@ -192,31 +250,50 @@ const Authorization = () => {
             <SignInContainer>
               <SignTitle>Sign In</SignTitle>
               <InputLabel>E-mail*:</InputLabel>
-              <InputLogin placeholder='zermankarim@gmail.com'></InputLogin>
+              <InputLogin placeholder='zermankarim@gmail.com'
+                onChange={(e) => setEmail((e!.target as HTMLInputElement)!.value)}
+                value={email}></InputLogin>
               <InputLabel>Password*:</InputLabel>
-              <InputPassword></InputPassword>
-              <SignInButton>Sign In</SignInButton>
+              <InputPassword type='password'
+                onChange={(e) => setPassword((e!.target as HTMLInputElement)!.value)}
+                value={password}></InputPassword>
+              <SignButton onClick={signIn}>Sign In</SignButton>
               <Ask>Haven't account?</Ask>
-              <Switcher onClick={() => setIsSignIn(!isSignIn)}>Sign Up</Switcher>
-              <GoogleTitle>Or Sing In with Google Account</GoogleTitle>
-              <GoogleAuth setCurrentUser={setCurrentUser}></GoogleAuth>
+              <Switcher onClick={() => {
+                setIsSignIn(!isSignIn)
+                clearFormStates()
+              }}>Sign Up</Switcher>
+
             </SignInContainer>
           ) : (
             <SignUpContainer>
               <SignTitle>Sign Up</SignTitle>
               <InputLabel>Name*:</InputLabel>
-              <InputName placeholder='Karim'></InputName>
+              <InputName placeholder='Karim'
+                onChange={(e) => setName((e!.target as HTMLInputElement)!.value)}
+                value={name}></InputName>
               <InputLabel>E-mail*:</InputLabel>
-              <InputLogin placeholder='zermankarim@gmail.com'></InputLogin>
+              <InputLogin placeholder='zermankarim@gmail.com'
+                onChange={(e) => setEmail((e!.target as HTMLInputElement)!.value)}
+                value={email}></InputLogin>
               <InputLabel>Password*:</InputLabel>
-              <InputPassword></InputPassword>
+              <InputPassword type='password'
+                onChange={(e) => setPassword((e!.target as HTMLInputElement)!.value)}
+                value={password}></InputPassword>
               <InputLabel>Repeat password*:</InputLabel>
-              <InputRepeatPassword></InputRepeatPassword>
-              <SignInButton>Sign Up</SignInButton>
+              <InputRepeatPassword type='password'
+                onChange={(e) => setRepassword((e!.target as HTMLInputElement)!.value)}
+                value={repassword}></InputRepeatPassword>
+              <SignButton onClick={signUp}>Sign Up</SignButton>
               <Ask>Have account?</Ask>
-              <Switcher onClick={() => setIsSignIn(!isSignIn)}>Sign in</Switcher>
+              <Switcher onClick={() => {
+                setIsSignIn(!isSignIn)
+                clearFormStates()
+              }}>Sign in</Switcher>
             </SignUpContainer>
           )}
+          <GoogleTitle>Or Sign  with Google Account</GoogleTitle>
+          <GoogleAuth setCurrentUser={setCurrentUser}></GoogleAuth>
         </SignContainer>
       ) : (
         <AccountInfo>

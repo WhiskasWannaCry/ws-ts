@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import {  useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { UserType } from '../types';
 
@@ -23,52 +23,52 @@ interface TokenResponse {
   authuser?: string;
 }
 
-const GoogleAuth = (props:{setCurrentUser: React.Dispatch<React.SetStateAction<UserType>>}) => {
+const GoogleAuth = (props: { setCurrentUser: React.Dispatch<React.SetStateAction<UserType>> }) => {
   const [googleUser, setGoogleUser] = useState<TokenResponse | undefined>()
-  const [ profile, setProfile ] = useState<any>();
+  const [profile, setProfile] = useState<TokenResponse | undefined>();
 
   useEffect(
     () => {
-        if (googleUser) {
-            axios
-                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${googleUser.access_token}`, {
-                    headers: {
-                        Authorization: `Bearer ${googleUser.access_token}`,
-                        Accept: 'application/json'
-                    }
-                })
-                .then((res) => {
-                    setProfile(res.data);
-                    const {email, name, picture, id, } = res.data
-                    props.setCurrentUser({
-                      id,
-                      email,
-                      username: name,
-                      image: picture,
-                      password: null,
-                    })
-                })
-                .catch((err) => console.log(err));
-        }
+      if (googleUser) {
+        axios
+          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${googleUser.access_token}`, {
+            headers: {
+              Authorization: `Bearer ${googleUser.access_token}`,
+              Accept: 'application/json'
+            }
+          })
+          .then((res) => {
+            setProfile(res.data);
+            const { email, name, picture, id, } = res.data
+            props.setCurrentUser({
+              id,
+              email,
+              username: name,
+              image: picture,
+              password: null,
+            })
+          })
+          .catch((err) => console.log(err));
+      }
     },
-    [ googleUser ]
-);
+    [googleUser]
+  );
 
 
 
 
   const loginWithGoogle = useGoogleLogin({
-    onSuccess:  (tokenResponse:Omit<TokenResponse, "error" | "error_description" | "error_uri">):void => {
+    onSuccess: (tokenResponse: Omit<TokenResponse, "error" | "error_description" | "error_uri">): void => {
       console.log(tokenResponse)
       setGoogleUser(tokenResponse)
-      
+
     },
     onError: () => console.log("Log in failed"),
   });
-  
+
   return (
-    <LoginBtn onClick={() => loginWithGoogle()}>Sign in with Google 🚀 </LoginBtn>
-);
+    <LoginBtn onClick={() => loginWithGoogle()}>Sign with Google 🚀 </LoginBtn>
+  );
 }
 
 export default GoogleAuth;

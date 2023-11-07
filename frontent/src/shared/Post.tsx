@@ -1,6 +1,9 @@
-import react from 'react'
+import react, { useState } from 'react'
 import styled from 'styled-components'
 import { PostType } from '../types'
+import { useSomeContext } from "../shared/Context"
+import AddComment from './AddComment'
+import CommentsList from '../ModalWindows/CommetsList'
 
 const Container = styled.div`
 display: flex;
@@ -46,20 +49,34 @@ margin-top: 8px;
 const Like = styled.div`
 `
 
+const Comments = styled.span`
+cursor: pointer;
+color: gray;
+font-size: 12px;
+margin-top: 12px;
+`
+
 const Post = (props: { post: PostType }) => {
-  const imageURL = `http://localhost:5000/${props.post.image}`
+  const { post } = props;
+  const imageURL = `http://localhost:5000/${post.image}`
+  const { currentUser, setCurrentUser } = useSomeContext();
+  const { modalOpened, setModalOpened } = useSomeContext();
+
   return (
-    <Container key={props.post.whoPostedID}>
-      <Username><b>{props.post.whoPostedID}</b></Username>
+    <Container key={post.authorID}>
+      <Username><b>{post.authorID}</b></Username>
       <ImageContainer>
         <Image src={imageURL} alt=""></Image>
       </ImageContainer>
       <Like>
-        
+
       </Like>
-      <Likes><b>{props.post.likes} отметок "Нравится"</b></Likes>
-      <Username><b>{props.post.whoPostedID}:</b></Username>
-      <Text>{props.post.text}</Text>
+      <Likes><b>{post.likes} отметок "Нравится"</b></Likes>
+      <Username><b>{post.authorID}:</b></Username>
+      <Text>{post.text}</Text>
+      <Comments onClick={() => setModalOpened(true)}>Посмотреть все комментарии ({post.comments.length})</Comments>
+      {currentUser.id !== '0' ? <AddComment></AddComment> : null}
+      {modalOpened ? <CommentsList post={post}></CommentsList> : null}
     </Container>
   )
 }

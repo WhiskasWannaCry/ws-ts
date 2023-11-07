@@ -1,9 +1,16 @@
+interface Comment {
+    id: String,
+    authorID: String,
+    text: String,
+}
+
 export type PostType = {
-  whoPostedID:string,
+  authorID:string,
   text:string,
   likes:number,
   image:string,
   subscribersIds:Array<string>,
+  comments: Array<Comment>,
 }
 
 export type UserType = {

@@ -1,11 +1,18 @@
 const { Schema,mongoose } = require('mongoose');
 
 const post = new Schema({
-  whoPostedID: String,
+  authorID: String,
   text: String,
   likes: [String],
   image: String,
   subscribesIds: [String],
+  comments: [
+    {
+      id: String,
+      authorID: String,
+      text: String,
+    }
+  ]
 });
 
 const user = new Schema({

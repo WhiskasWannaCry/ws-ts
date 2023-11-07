@@ -43,3 +43,8 @@ app.get("/get_posts", async (req, res) => {
   }));
   res.send(newPosts);
 });
+
+// Now not working
+app.post("/sign_up_user", async (req, res) => {
+  console.log(req.body)
+});

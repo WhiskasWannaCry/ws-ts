@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import React from 'react'
 import { PostType } from '../types'
 import Post from '../shared/Post'
 import Authorization from '../shared/Authorization'
+// import { useSomeContext } from '../shared/Context'
 
 const Container = styled.div`
 display: flex;
@@ -22,11 +22,12 @@ const Posts = styled.div`
 `
 
 const Home = (props: { posts: PostType[] }) => {
+
   return (
     <Container>
       <Posts>
-        {props.posts.length ? props.posts.map(post => (
-          <Post key={post.whoPostedID} post={post}></Post>
+        {props.posts.length ? props.posts.map((post:PostType) => (
+          <Post key={post.authorID} post={post}></Post>
         )) : null}
       </Posts>
       <Authorization></Authorization>
