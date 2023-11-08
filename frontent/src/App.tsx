@@ -31,7 +31,6 @@ const App = () => {
     postId: '',
   })
   const [currentUser, setCurrentUser] = useState<UserType>({
-    _id: "0",
     username: 'Guest',
     image: '',
     password: '',

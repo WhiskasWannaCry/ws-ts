@@ -25,7 +25,7 @@ const ImageContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 400px;
+  height: calc(35vw - 5vw); 
   border: 1px solid #dae2db40;
   margin-top: 8px;
   overflow: hidden;

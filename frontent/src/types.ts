@@ -15,7 +15,7 @@ export type PostType = {
 }
 
 export type UserType = {
-  _id: string,
+  _id?: string,
   email: string,
   username: string,
   image: string,

@@ -23,5 +23,9 @@ const user = new Schema({
 });
 
 const Posts = mongoose.model('posts', post);
+const Users = mongoose.model('users', user);
 
-module.exports = Posts
+module.exports = {
+  Posts,
+  Users,
+}

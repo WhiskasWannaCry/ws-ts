@@ -48,7 +48,6 @@ const AddComment = (props: { postID: string, setPostComments:Dispatch<SetStateAc
     if (!userLS) {
       alert("You is not a user!")
       setCurrentUser({
-        _id: "0",
         username: 'Guest',
         image: '',
         password: '',

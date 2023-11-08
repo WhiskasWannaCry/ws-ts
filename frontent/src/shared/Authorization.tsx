@@ -182,7 +182,6 @@ const Authorization = () => {
   // log out function to log the user out of google and set the profile array to null
   const logOutWithGoogle = () => {
     const guest: UserType = {
-      _id: "0",
       username: 'Guest',
       image: '',
       password: '',
@@ -203,14 +202,14 @@ const Authorization = () => {
     setRepassword("")
   }
 
-  const sendSignUpUser = async (user: UserType) => {
-    try {
-      const data = await signUpUser(user);
-      return data
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  // const sendSignUpUser = async (user: UserType) => {
+  //   try {
+  //     const data = await signUpUser(user);
+  //     return data
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // }
 
   const signUp = () => {
     // Here must be sign up logic
@@ -227,11 +226,14 @@ const Authorization = () => {
       alert("Incorrect e-mail")
       return
     }
-    console.log("Succesful validation on client")
-    const user: UserType = { username: name, email, password, _id: String(Date.now()), image: "" }
+    const user: UserType = { username: name, email, password, image: "" }
 
-    // Now not working
-    signUpUser(user)
+    // Need more logic
+    signUpUser(user).then((res:any) => {
+      const {success, message} = res.data;
+      console.log(success, message)
+    })
+    console.log("Succesful validation on client")
   }
 
   const signIn = () => {
@@ -244,7 +246,7 @@ const Authorization = () => {
 
   return (
     <Container>
-      {currentUser._id === '0' ? (
+      {!currentUser._id ? (
         <SignContainer>
           {isSignIn ? (
             <SignInContainer>
