@@ -37,6 +37,7 @@ display: flex;
  width: 80%;
  height: calc(55vw - 5vw); 
  max-height: 80vh;
+ background-color: #161616;
 `
 
 const ImageContainer = styled.div`
