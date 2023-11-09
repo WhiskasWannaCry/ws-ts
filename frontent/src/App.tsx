@@ -37,7 +37,7 @@ const App = () => {
   })
   const [currentUser, setCurrentUser] = useState<UserClientType>({
     username: 'Guest',
-    image: '',
+    image: "http://localhost:5000/users_images/guest.png",
     _id: '',
     email: "",
     token: "",
@@ -86,7 +86,7 @@ const App = () => {
       if(!success) {
         const guest = {
           username: 'Guest',
-          image: '',
+          image: "http://localhost:5000/users_images/guest.png",
           _id: '',
           email: "",
           token: "",
@@ -109,6 +109,7 @@ const App = () => {
   useEffect(() => {
     getData().then((data) => {
       setPosts(data)
+      console.log(data)
     })
   }, [])
   return (

@@ -10,6 +10,8 @@ height: 100%;
 width: 20%;
 top:0;
 padding: 10px;
+border: 1px solid #dae2db40;
+margin: 8px;
 `
 
 const Logo = styled.div`
@@ -21,7 +23,13 @@ width: 100%;
 height: 100px;
 font-size: 24px;
 font-weight: 1000;
-border: 1px solid #dae2db40;
+`
+
+const HR1 = styled.span`
+  width: 100%;
+  margin-top: 16px;
+  height: 1px;
+  background-color: #dae2db40;
 `
 
 const Nav = styled.nav`
@@ -31,7 +39,7 @@ const Nav = styled.nav`
   width: 100%;
   height: 500px;
   padding: 10px;
-  border: 1px solid #dae2db40;
+  margin-top: 16px;
 `
 
 const Link = styled.a<{ $linkname: string,$activelink:string }>`
@@ -64,6 +72,7 @@ const MainMenu = (props:{activeLink:string, setActiveLink:React.Dispatch<React.S
   return (
     <Container>
       <Logo onClick={() => navigate('/')}>Some Logo</Logo>
+      <HR1></HR1>
       <Nav>
         <Link $linkname="Home" $activelink={props.activeLink} onClick={() => handleClick("Home")} href='/'>Home</Link>
         <Link $linkname="Contacts" $activelink={props.activeLink} onClick={() => handleClick('Contacts')} href='/Contacts'>Contacts</Link>

@@ -1,5 +1,5 @@
-const {Posts,Users}  = require('./schemas');
-const authRouter = require('./authRouter')
+const { Posts, Users } = require('./schemas');
+const authRouter = require('./authRouter');
 const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
@@ -47,21 +47,23 @@ app.get('/get_posts', async (req, res) => {
   res.send(newPosts);
 });
 
-app.use('/auth', authRouter)
+app.use('/auth', authRouter);
 
-app.get("/validation_current_user",(req,res) => {
-  const userForValidation = req.query
+app.get('/validation_current_user', (req, res) => {
+  const userForValidation = req.query;
   try {
-    var decoded = jwt.verify(userForValidation.token, process.env.JWT_SECRET_KEY);
-    console.log(decoded)
-  } catch(err) {
+    var decoded = jwt.verify(
+      userForValidation.token,
+      process.env.JWT_SECRET_KEY,
+    );
+  } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
       // Обработка истекшего токена
-      console.log(err)
-      res.json({ success: false, message: "Token expired" });
+      console.log(err);
+      res.json({ success: false, message: 'Token expired' });
     }
   }
-})
+});
 
 app.post('/add_new_comment', async (req, res) => {
   const { postID, comment } = req.body;
@@ -73,10 +75,34 @@ app.post('/add_new_comment', async (req, res) => {
       await postDocument.save();
       res.send(post.comments);
     } else {
-      res.status(404).json({ success:false, message: 'Post not found' });
+      res.json({ success: false, message: 'Post not found' });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success:false, message: 'Server error (new comment)' });
+    res
+      .json({ success: false, message: 'Server error (new comment)' });
+  }
+});
+
+app.post('/add_or_remove_like', async (req, res) => {
+  const { userLSID, postID } = req.body;
+  try {
+    let post = await Posts.findById(postID);
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Post not found' });
+    }
+    const userLikedPost = post.likes.findIndex(likerID => likerID === userLSID);
+    if (userLikedPost === -1) {
+      post.likes.push(userLSID);
+    } else {
+      post.likes.splice(userLikedPost, 1);
+      likeStatus = false;
+    }
+    await post.save();
+    res.json({ success: true, post });
+  } catch (error) {
+    console.error(error);
+    res
+      .json({ success: false, message: 'Server error (add or remove like)' });
   }
 });

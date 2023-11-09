@@ -19,6 +19,9 @@ const Posts = styled.div`
  padding-top: 0px;
  border: 1px solid #dae2db1c;
  background-color: #1a1b1ea6;
+ -webkit-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.26) inset;
+-moz-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.26) inset;
+box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.26) inset;
 `
 
 const Home = (props: { posts: PostType[] }) => {

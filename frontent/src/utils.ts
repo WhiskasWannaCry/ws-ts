@@ -31,3 +31,8 @@ export const validationCurrentUser = async (userLS:UserClientType) => {
   const data = await axios.get('http://localhost:5000/validation_current_user', {params:userLS})
   return data
 }
+
+export const addOrRemoveLike = async (userLSID:string, postID:any) => {
+  const data = await axios.post('http://localhost:5000/add_or_remove_like', {userLSID,postID})
+  return data
+}

@@ -7,6 +7,12 @@ import axios from 'axios';
 import GoogleAuth from './GoogleAuth';
 import { UserClientType, UserSignInType, UserSignUpType, UserType } from '../types';
 import { signInUser } from '../utils';
+
+// Images
+import profileIcon from '../images/icons/profile_icon.png'
+import settingsIcon from '../images/icons/settings.png'
+import friendsIcon from '../images/icons/friends.png'
+
 const { signUpUser } = require('../utils')
 
 const Container = styled.div`
@@ -15,6 +21,7 @@ const Container = styled.div`
   width: 30%;
   padding: 10px;
   height: 100%;
+
 `
 
 const SignContainer = styled.div`
@@ -25,6 +32,9 @@ border: 1px solid #dae2db40;
 width: 100%;
 min-height: 300px;
 padding: 10px;
+-webkit-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
+-moz-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
+box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
 `
 
 const SignInContainer = styled.div`
@@ -132,6 +142,9 @@ flex-direction: column;
 align-items: center;
 padding: 16px;
 border: 1px solid #dae2db40;
+-webkit-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
+-moz-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
+box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
 `
 
 const ImageAndName = styled.div`
@@ -155,14 +168,65 @@ const AccountImage = styled.img`
 width: 100%;
 `
 
-const AccountName = styled.span`
+const NameAndEmail = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 50%;
+  max-width: 50%;
+  
+`
+
+const AccountName = styled.span`
+  
+
 `
 
 const AccountEmail = styled.span`
   margin-top: 8px;
   width: 100%;
   color: #dae2db65;
+  white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+`
+
+const HR1 = styled.span`
+  width: 100%;
+  margin-top: 16px;
+  height: 1px;
+  background-color: #dae2db40;
+`
+
+const AccountNav = styled.nav`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+`
+
+const NavAContainer = styled.div`
+  cursor: pointer;
+display: flex;
+height: 32px;
+width: 100%;
+margin-top: 8px;
+padding: 4px;
+border-radius: 8px;
+&:hover {
+  background-color: #dae2db34;
+}
+`
+
+const NavIcon = styled.img`
+height: 100%;
+`
+
+const NavA = styled.a`
+display: flex;
+align-items: center;
+text-decoration: none;
+width: 100%;
+margin-left: 4px;
 `
 
 const LogoutBtn = styled.button`
@@ -188,7 +252,7 @@ const Authorization = () => {
   const logOutWithGoogle = () => {
     const guest: UserClientType = {
       username: 'Guest',
-      image: '',
+      image: "http://localhost:5000/users_images/guest.png",
       _id: '',
       email: "",
       token: "",
@@ -223,16 +287,16 @@ const Authorization = () => {
       alert("Incorrect e-mail")
       return
     }
-    const user: UserSignUpType = { username: name, email, password, image: "" }
+    const user: UserSignUpType = { username: name, email, password, image: "http://localhost:5000/users_images/guest.png", }
 
     // Need more logic
-    signUpUser(user).then((res?:any) => {
+    signUpUser(user).then((res?: any) => {
       try {
         const { success, message } = res.data;
         if (!success) {
           alert(message)
         } else {
-          const {user} = res.data;
+          const { user } = res.data;
           setCurrentUser(user)
           localStorage.setItem("currentUser", JSON.stringify(user))
         }
@@ -330,9 +394,27 @@ const Authorization = () => {
             <AccountImageContainer>
               <AccountImage src={currentUser.image} alt="user image" />
             </AccountImageContainer>
-            <AccountName>{currentUser.username}</AccountName>
+            <NameAndEmail>
+              <AccountName>{currentUser.username}</AccountName>
+              <AccountEmail>{currentUser.email}</AccountEmail>
+            </NameAndEmail>
           </ImageAndName>
-          <AccountEmail>{currentUser.email}</AccountEmail>
+          <HR1></HR1>
+          <AccountNav>
+            <NavAContainer>
+              <NavIcon src={profileIcon} alt='#'></NavIcon>
+              <NavA href='#'>Your profile</NavA>
+            </NavAContainer>
+            <NavAContainer>
+              <NavIcon src={friendsIcon} alt='#'></NavIcon>
+              <NavA href='#'>Friends</NavA>
+            </NavAContainer>
+            <NavAContainer>
+              <NavIcon src={settingsIcon} alt='#'></NavIcon>
+              <NavA href='#'>Settings</NavA>
+            </NavAContainer>
+          </AccountNav>
+          <HR1></HR1>
           <br />
           <br />
           <LogoutBtn onClick={logOutWithGoogle}>Log out</LogoutBtn>

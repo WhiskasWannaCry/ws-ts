@@ -10,7 +10,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  height: 40px;
+  height: 32px;
   margin-top: 12px;
 `
 
@@ -19,6 +19,8 @@ const Input = styled.input`
   padding: 4px;
   width: 60%;
   height: 100%;
+  background-color: #161616;
+  border-radius: 4px;
 `
 
 const AddNewCommentBtn = styled.button`
@@ -50,7 +52,7 @@ const AddComment = (props: { postID: string, setPostComments:Dispatch<SetStateAc
       setCurrentUser({
         _id: "",
         username: 'Guest',
-        image: '',
+        image: "http://localhost:5000/users_images/guest.png",
         email: "",
         token: "",
       })
