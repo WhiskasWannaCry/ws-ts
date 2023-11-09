@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {PostType, UserType, Comment} from './types'
+import {PostType, Comment, UserSignInType, UserSignUpType, UserClientType} from './types'
 
 // Get all posts from Posts Collection
 // Return array of posts objects
@@ -8,12 +8,26 @@ export const getPosts = async ():Promise<PostType[]> => {
   return data
 }
 
-export const signUpUser = async (user: UserType) => {
-  const data = await axios.post('http://localhost:5000/sign_up_user', user)
+export const signUpUser = async (user: UserSignUpType) => {
+  const data = await axios.post('http://localhost:5000/auth/registration', user)
+  return data
+}
+
+export const signInUser = async (user: UserSignInType) => {
+  const data = await axios.post('http://localhost:5000/auth/login', user, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
   return data
 }
 
 export const addNewComment = async (comment: Comment, postID:string) => {
   const data = await axios.post('http://localhost:5000/add_new_comment', {comment,postID})
+  return data
+}
+
+export const validationCurrentUser = async (userLS:UserClientType) => {
+  const data = await axios.get('http://localhost:5000/validation_current_user', {params:userLS})
   return data
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
-import { UserType } from '../types';
+import { UserClientType, UserType } from '../types';
 
 const LoginBtn = styled.button`
   margin-top: 8px;
@@ -23,37 +23,37 @@ interface TokenResponse {
   authuser?: string;
 }
 
-const GoogleAuth = (props: { setCurrentUser: React.Dispatch<React.SetStateAction<UserType>> }) => {
+const GoogleAuth = (props: { setCurrentUser: React.Dispatch<React.SetStateAction<UserClientType>> }) => {
   const [googleUser, setGoogleUser] = useState<TokenResponse | undefined>()
   const [profile, setProfile] = useState<TokenResponse | undefined>();
 
-  useEffect(
-    () => {
-      if (googleUser) {
-        axios
-          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${googleUser.access_token}`, {
-            headers: {
-              Authorization: `Bearer ${googleUser.access_token}`,
-              Accept: 'application/json'
-            }
-          })
-          .then((res) => {
-            setProfile(res.data);
-            const { email, name, picture, } = res.data
-            const newCurrentUser = {
-              email,
-              username: name,
-              image: picture,
-              password: '',
-            }
-            props.setCurrentUser(newCurrentUser)
-            localStorage.setItem("currentUser",JSON.stringify(newCurrentUser))
-          })
-          .catch((err) => console.log(err));
-      }
-    },
-    [googleUser]
-  );
+  // useEffect(
+  //   () => {
+  //     if (googleUser) {
+  //       axios
+  //         .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${googleUser.access_token}`, {
+  //           headers: {
+  //             Authorization: `Bearer ${googleUser.access_token}`,
+  //             Accept: 'application/json'
+  //           }
+  //         })
+  //         .then((res) => {
+  //           setProfile(res.data);
+  //           const { email, name, picture, } = res.data
+  //           const newCurrentUser = {
+  //             email,
+  //             username: name,
+  //             image: picture,
+  //             password: '',
+  //           }
+  //           props.setCurrentUser(newCurrentUser)
+  //           localStorage.setItem("currentUser",JSON.stringify(newCurrentUser))
+  //         })
+  //         .catch((err) => console.log(err));
+  //     }
+  //   },
+  //   [googleUser]
+  // );
 
 
 

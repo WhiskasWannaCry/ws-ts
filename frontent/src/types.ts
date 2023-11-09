@@ -15,7 +15,7 @@ export type PostType = {
 }
 
 export type UserType = {
-  _id?: string,
+  _id: string,
   email: string,
   username: string,
   image: string,
@@ -25,4 +25,30 @@ export type UserType = {
 export type modalOpenCommentType = {
   opened: Boolean,
   postId: string,
+}
+
+export interface UserClientType {
+  _id:string,
+  email: string,
+  token: string,
+  username: string,
+  image: string,
+}
+export interface UserSignInType {
+  email: string,
+  password: string,
+}
+
+// Now not working
+// export interface UserSignInResponseType {
+//   success: Boolean,
+//   message: string,
+//   user?: UserClientType,
+// }
+
+export interface UserSignUpType {
+  email: string,
+  username: string,
+  image: string,
+  password: string,
 }

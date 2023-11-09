@@ -39,7 +39,7 @@ display: flex;
 justify-content: center;
 align-items: center;
 margin: 10px;
-font-size: 20px;
+font-size: 16px;
 text-decoration: none;
 width: 100%;
 height: 48px;

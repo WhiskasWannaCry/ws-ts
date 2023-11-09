@@ -4,8 +4,13 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home';
 import Contacts from './pages/Contacts';
 import MainMenu from './components/MainMenu';
-import { PostType, UserType, modalOpenCommentType } from './types'
+import { PostType, UserClientType, UserType, modalOpenCommentType } from './types'
 import { Context, useSomeContext } from './shared/Context';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { validationCurrentUser } from './utils';
 
 
 
@@ -30,11 +35,12 @@ const App = () => {
     opened: false,
     postId: '',
   })
-  const [currentUser, setCurrentUser] = useState<UserType>({
+  const [currentUser, setCurrentUser] = useState<UserClientType>({
     username: 'Guest',
     image: '',
-    password: '',
+    _id: '',
     email: "",
+    token: "",
   }) // Default guest account
 
   const [activeLink, setActiveLink] = useState<string>('Home')
@@ -70,6 +76,27 @@ const App = () => {
       document.body.style.overflow = "auto";
     };
   }, [modalOpened]);
+
+  useEffect(() => {
+    const userLS = JSON.parse(localStorage.getItem('currentUser')!)
+ 
+    validationCurrentUser(userLS).then(res => {
+      const {data} = res;
+      const {success,message} = data;
+      if(!success) {
+        const guest = {
+          username: 'Guest',
+          image: '',
+          _id: '',
+          email: "",
+          token: "",
+        }
+        alert(message)
+        setCurrentUser(guest)
+        localStorage.setItem("currentUser", JSON.stringify(guest))
+      }
+    })
+  },[])
 
   const getData = async () => {
     try {

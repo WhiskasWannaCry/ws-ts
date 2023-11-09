@@ -1,4 +1,6 @@
 const {Posts,Users}  = require('./schemas');
+const authRouter = require('./authRouter')
+const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
 
@@ -45,30 +47,21 @@ app.get('/get_posts', async (req, res) => {
   res.send(newPosts);
 });
 
-// Need more logic
-app.post('/sign_up_user', async (req, res) => {
-  const { username, email, password, image } = req.body;
-  if (!username || !email || !password) {
-    res.status(500).json({ success:false, message: 'Incorrect fields!' });
-  } else {
-    try {
-      let foundUser = await Users.findOne({email})
-      if(!foundUser) {
-        const newUser = { username, email, password, image };
-        await Users.create(newUser)
-        foundUser = await Users.findOne({email})
-        res.send({success:true, message:"User succesfull registered!",foundUser})
-      } else {
-        res.send({ success:false, message: 'User with this e-mail already signed up' });
-      }
-      console.log(foundUser)
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success:false, message: 'Server error (sign up)' });
+app.use('/auth', authRouter)
+
+app.get("/validation_current_user",(req,res) => {
+  const userForValidation = req.query
+  try {
+    var decoded = jwt.verify(userForValidation.token, process.env.JWT_SECRET_KEY);
+    console.log(decoded)
+  } catch(err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      // Обработка истекшего токена
+      console.log(err)
+      res.json({ success: false, message: "Token expired" });
     }
-    
   }
-});
+})
 
 app.post('/add_new_comment', async (req, res) => {
   const { postID, comment } = req.body;

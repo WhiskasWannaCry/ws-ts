@@ -1,10 +1,10 @@
 import { createContext, useContext, Dispatch, SetStateAction } from 'react';
-import { UserType, modalOpenCommentType } from '../types';
+import { UserClientType, modalOpenCommentType } from '../types';
 
 type contextType = {
   // Context of current logined user
-  currentUser: UserType;
-  setCurrentUser: Dispatch<SetStateAction<UserType>>;
+  currentUser: UserClientType;
+  setCurrentUser: Dispatch<SetStateAction<UserClientType>>;
 
   // Context of modal windows
   modalOpened: modalOpenCommentType;

@@ -84,7 +84,7 @@ const Post = (props: { post: PostType }) => {
         opened:true,
         postId:post._id,
       }))}>Посмотреть все комментарии ({postComments.length})</Comments>
-      {currentUser._id !== '0' ? <AddComment postID={post._id} setPostComments={setPostComments}></AddComment> : null}
+      {currentUser._id ? <AddComment postID={post._id} setPostComments={setPostComments}></AddComment> : null}
       {modalOpened.opened && modalOpened.postId === post._id ? <CommentsList post={post} postComments={postComments}></CommentsList> : null}
     </Container>
   )
