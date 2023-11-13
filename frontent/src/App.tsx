@@ -11,6 +11,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { validationCurrentUser } from './utils';
+import Friends from './pages/Friends';
 
 
 
@@ -109,7 +110,6 @@ const App = () => {
   useEffect(() => {
     getData().then((data) => {
       setPosts(data)
-      console.log(data)
     })
   }, [])
   return (
@@ -120,6 +120,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home posts={posts}></Home>}></Route>
           <Route path='/Contacts' element={<Contacts></Contacts>}></Route>
+          <Route path='/friends/:userID' element={<Friends></Friends>}></Route>
         </Routes>
       </Context.Provider>
     </Container>

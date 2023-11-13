@@ -36,3 +36,15 @@ export const addOrRemoveLike = async (userLSID:string, postID:any) => {
   const data = await axios.post('http://localhost:5000/add_or_remove_like', {userLSID,postID})
   return data
 }
+
+export const getUserFriendsIds = async (userLS:UserClientType) => {
+  const data = await axios.get('http://localhost:5000/get_user_friends_ids', {params:userLS})
+  return data
+}
+
+export const getUserFriendsInfo = async (ids:Array<string>) => {
+  const data = await axios.get('http://localhost:5000/get_user_friends_info', {
+    params:{ids:JSON.stringify(ids)}
+  })
+  return data
+}

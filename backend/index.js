@@ -79,8 +79,7 @@ app.post('/add_new_comment', async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res
-      .json({ success: false, message: 'Server error (new comment)' });
+    res.json({ success: false, message: 'Server error (new comment)' });
   }
 });
 
@@ -89,9 +88,13 @@ app.post('/add_or_remove_like', async (req, res) => {
   try {
     let post = await Posts.findById(postID);
     if (!post) {
-      return res.status(404).json({ success: false, message: 'Post not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Post not found' });
     }
-    const userLikedPost = post.likes.findIndex(likerID => likerID === userLSID);
+    const userLikedPost = post.likes.findIndex(
+      (likerID) => likerID === userLSID,
+    );
     if (userLikedPost === -1) {
       post.likes.push(userLSID);
     } else {
@@ -102,7 +105,36 @@ app.post('/add_or_remove_like', async (req, res) => {
     res.json({ success: true, post });
   } catch (error) {
     console.error(error);
-    res
-      .json({ success: false, message: 'Server error (add or remove like)' });
+    res.json({ success: false, message: 'Server error (add or remove like)' });
+  }
+});
+
+app.get('/get_user_friends_ids', async (req, res) => {
+  const userLS = req.query;
+  try {
+    const userIDAndFriends = await Users.findOne(
+      { _id: userLS._id },
+      //excluding all fields expect "_id" and "friends" fields
+      { username: 0, email: 0, password: 0, image: 0, __v: 0},
+    );
+    res.json({success:true,userIDAndFriends})
+  } catch(e) {
+    res.json({success:false, message: "Server error (get user friends ids)"})
+    console.log(e)
+  }
+});
+
+app.get('/get_user_friends_info', async (req, res) => {
+  try {
+    let ids = JSON.parse(req.query.ids);
+        if(ids[0] === '') {
+          ids = [];
+        }
+        console.log(ids)
+    const friendsInfoArr = await Users.find({},{ password: 0, friends: 0},).where('_id').in(ids).exec();
+    res.json({success:true,friendsInfoArr})
+  } catch(e) {
+    console.log(e)
+    res.json({success:false, message: "Server error (get user friends info)"})
   }
 });

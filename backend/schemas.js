@@ -20,6 +20,7 @@ const user = new Schema({
   email: String,
   password: String,
   image: String,
+  friends: [String],
 });
 
 const Posts = mongoose.model('posts', post);

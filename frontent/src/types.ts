@@ -39,16 +39,16 @@ export interface UserSignInType {
   password: string,
 }
 
-// Now not working
-// export interface UserSignInResponseType {
-//   success: Boolean,
-//   message: string,
-//   user?: UserClientType,
-// }
-
 export interface UserSignUpType {
   email: string,
   username: string,
   image: string,
   password: string,
+}
+
+export interface friendInfo {
+  _id: string,
+  email: string,
+  username: string,
+  image: string,
 }

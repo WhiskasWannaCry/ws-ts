@@ -3,15 +3,16 @@ import styled from 'styled-components'
 import { useContext } from 'react';
 import { useSomeContext } from '../shared/Context'
 import { googleLogout } from '@react-oauth/google';
-import axios from 'axios';
+
 import GoogleAuth from './GoogleAuth';
-import { UserClientType, UserSignInType, UserSignUpType, UserType } from '../types';
+import { UserClientType, UserSignInType, UserSignUpType } from '../types';
 import { signInUser } from '../utils';
 
 // Images
 import profileIcon from '../images/icons/profile_icon.png'
 import settingsIcon from '../images/icons/settings.png'
 import friendsIcon from '../images/icons/friends.png'
+import { useNavigate } from 'react-router-dom';
 
 const { signUpUser } = require('../utils')
 
@@ -241,39 +242,49 @@ const LogoutBtn = styled.button`
 `
 
 const Authorization = () => {
+  const navigate = useNavigate()
   const { currentUser, setCurrentUser } = useSomeContext();
   const [isSignIn, setIsSignIn] = useState<Boolean>(false)
-  // console.log(currentUser)
+
+  // <For inputs user's information>
   const [name, setName] = useState<string>("")
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [repassword, setRepassword] = useState<string>("")
-  // log out function to log the user out of google and set the profile array to null
+  // </For inputs user's information>
+
+  // <Default guest account>
+  const guest: UserClientType = {
+    username: 'Guest',
+    image: "http://localhost:5000/users_images/guest.png",
+    _id: '',
+    email: "",
+    token: "",
+  }
+  // </ Default guest account>
+
+  // <log out function to log the user out of google and set the profile array to null>
   const logOutWithGoogle = () => {
-    const guest: UserClientType = {
-      username: 'Guest',
-      image: "http://localhost:5000/users_images/guest.png",
-      _id: '',
-      email: "",
-      token: "",
-    }
+
     googleLogout();
 
     // When user logout, return to default guest account to state and local storage
     setCurrentUser(guest)
     localStorage.setItem("currentUser", JSON.stringify(guest))
   }
+  // </ log out function to log the user out of google and set the profile array to null>
 
+  // <setFormStates("")>
   const clearFormStates = () => {
-    // setFormStates("")
     setName("")
     setEmail("")
     setPassword("")
     setRepassword("")
   }
+  // </ setFormStates("")>
 
+  // <Here must be sign up logic>
   const signUp = () => {
-    // Here must be sign up logic
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!name || !email || !password || !repassword) {
       alert("Incorrect value of fields")
@@ -305,9 +316,10 @@ const Authorization = () => {
       }
     })
   }
+  // </ Here must be sign up logic>
 
+  // <Here must be sign in logic>
   const signIn = () => {
-    // Here must be sign in logic
     if (!email || !password) {
       alert("Incorrect value of fields")
       return
@@ -333,7 +345,28 @@ const Authorization = () => {
     }
 
   }
+  // </Here must be sign in logic>
 
+  const toFriendsPage = () => {
+    const userLS: UserClientType = JSON.parse(localStorage.getItem('currentUser')!)
+    // If user is not found, set current user as guest and clear LS
+    if (!userLS) {
+      try {
+        setCurrentUser(guest)
+        localStorage.setItem("currentUser", JSON.stringify(guest))
+        throw new Error("UserLS error: user is not found in LS");
+      } catch (e: any) {
+        console.log(e.name + ": " + e.message);
+      }
+      return
+    }
+    // else navigate user to friends page with his _id
+    try {
+      navigate(`/friends/${userLS._id}`)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <Container>
@@ -388,7 +421,7 @@ const Authorization = () => {
           <GoogleTitle>Or Sign  with Google Account</GoogleTitle>
           <GoogleAuth setCurrentUser={setCurrentUser}></GoogleAuth>
         </SignContainer>
-      ) : (
+      ) : ( // Or, if user is logined or signed up, showi user account info
         <AccountInfo>
           <ImageAndName>
             <AccountImageContainer>
@@ -407,7 +440,7 @@ const Authorization = () => {
             </NavAContainer>
             <NavAContainer>
               <NavIcon src={friendsIcon} alt='#'></NavIcon>
-              <NavA href='#'>Friends</NavA>
+              <NavA href='' onClick={toFriendsPage}>Friends</NavA>
             </NavAContainer>
             <NavAContainer>
               <NavIcon src={settingsIcon} alt='#'></NavIcon>
