@@ -56,6 +56,11 @@ app.get('/validation_current_user', (req, res) => {
       userForValidation.token,
       process.env.JWT_SECRET_KEY,
     );
+    // If token is verified, response to client success true end user's _id
+    if(decoded) {
+      const {id:userID} = decoded
+      res.json({success:true, userID})
+    }
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
       // Обработка истекшего токена
@@ -130,7 +135,6 @@ app.get('/get_user_friends_info', async (req, res) => {
         if(ids[0] === '') {
           ids = [];
         }
-        console.log(ids)
     const friendsInfoArr = await Users.find({},{ password: 0, friends: 0},).where('_id').in(ids).exec();
     res.json({success:true,friendsInfoArr})
   } catch(e) {

@@ -4,9 +4,9 @@ import { useContext } from 'react';
 import { useSomeContext } from '../shared/Context'
 import { googleLogout } from '@react-oauth/google';
 
-import GoogleAuth from './GoogleAuth';
+import GoogleAuth from '../shared/GoogleAuth';
 import { UserClientType, UserSignInType, UserSignUpType } from '../types';
-import { signInUser } from '../utils';
+import { signInUser, verifyCurrentUser } from '../utils';
 
 // Images
 import profileIcon from '../images/icons/profile_icon.png'
@@ -14,6 +14,7 @@ import settingsIcon from '../images/icons/settings.png'
 import friendsIcon from '../images/icons/friends.png'
 import { useNavigate } from 'react-router-dom';
 
+// !!! require after default import !!!
 const { signUpUser } = require('../utils')
 
 const Container = styled.div`
@@ -222,7 +223,7 @@ const NavIcon = styled.img`
 height: 100%;
 `
 
-const NavA = styled.a`
+const NavA = styled.span`
 display: flex;
 align-items: center;
 text-decoration: none;
@@ -263,7 +264,7 @@ const Authorization = () => {
   }
   // </ Default guest account>
 
-  // <log out function to log the user out of google and set the profile array to null>
+  // <log out function to log out the user of google and set the profile array to null>
   const logOutWithGoogle = () => {
 
     googleLogout();
@@ -349,28 +350,71 @@ const Authorization = () => {
 
   const toFriendsPage = () => {
     const userLS: UserClientType = JSON.parse(localStorage.getItem('currentUser')!)
+    const { token } = userLS;
+
     // If user is not found, set current user as guest and clear LS
-    if (!userLS) {
-      try {
-        setCurrentUser(guest)
-        localStorage.setItem("currentUser", JSON.stringify(guest))
-        throw new Error("UserLS error: user is not found in LS");
-      } catch (e: any) {
-        console.log(e.name + ": " + e.message);
+    verifyCurrentUser(userLS).then((res: any) => {
+      // data = { success: boolean, userID?:string }
+      const { data } = res;
+      const { success } = data;
+      if (!success) {
+        try {
+          setCurrentUser(guest)
+          localStorage.setItem("currentUser", JSON.stringify(guest))
+          throw new Error("UserLS error: user is not found in LS");
+        } catch (e: any) {
+          console.log(e.name + ": " + e.message);
+        }
+        return
       }
-      return
-    }
-    // else navigate user to friends page with his _id
-    try {
-      navigate(`/friends/${userLS._id}`)
-    } catch (e) {
-      console.log(e)
-    }
+      // else navigate user to friends page with his _id
+      else {
+        try {
+          const {userID} = data;
+          navigate(`/friends/${userID}`)
+          console.log(data)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    })
   }
+
 
   return (
     <Container>
-      {!currentUser._id ? (
+      {currentUser._id ? ( // if user is logined or signed up, show user account info
+        <AccountInfo>
+          <ImageAndName>
+            <AccountImageContainer>
+              <AccountImage src={currentUser.image} alt="user image" />
+            </AccountImageContainer>
+            <NameAndEmail>
+              <AccountName>{currentUser.username}</AccountName>
+              <AccountEmail>{currentUser.email}</AccountEmail>
+            </NameAndEmail>
+          </ImageAndName>
+          <HR1></HR1>
+          <AccountNav>
+            <NavAContainer>
+              <NavIcon src={profileIcon} alt='#'></NavIcon>
+              <NavA>Your profile</NavA>
+            </NavAContainer>
+            <NavAContainer>
+              <NavIcon src={friendsIcon} alt='#'></NavIcon>
+              <NavA onClick={toFriendsPage}>Friends</NavA>
+            </NavAContainer>
+            <NavAContainer>
+              <NavIcon src={settingsIcon} alt='#'></NavIcon>
+              <NavA>Settings</NavA>
+            </NavAContainer>
+          </AccountNav>
+          <HR1></HR1>
+          <br />
+          <br />
+          <LogoutBtn onClick={logOutWithGoogle}>Log out</LogoutBtn>
+        </AccountInfo>
+      ):( // Or show authorization panel
         <SignContainer>
           {isSignIn ? (
             <SignInContainer>
@@ -421,37 +465,6 @@ const Authorization = () => {
           <GoogleTitle>Or Sign  with Google Account</GoogleTitle>
           <GoogleAuth setCurrentUser={setCurrentUser}></GoogleAuth>
         </SignContainer>
-      ) : ( // Or, if user is logined or signed up, showi user account info
-        <AccountInfo>
-          <ImageAndName>
-            <AccountImageContainer>
-              <AccountImage src={currentUser.image} alt="user image" />
-            </AccountImageContainer>
-            <NameAndEmail>
-              <AccountName>{currentUser.username}</AccountName>
-              <AccountEmail>{currentUser.email}</AccountEmail>
-            </NameAndEmail>
-          </ImageAndName>
-          <HR1></HR1>
-          <AccountNav>
-            <NavAContainer>
-              <NavIcon src={profileIcon} alt='#'></NavIcon>
-              <NavA href='#'>Your profile</NavA>
-            </NavAContainer>
-            <NavAContainer>
-              <NavIcon src={friendsIcon} alt='#'></NavIcon>
-              <NavA href='' onClick={toFriendsPage}>Friends</NavA>
-            </NavAContainer>
-            <NavAContainer>
-              <NavIcon src={settingsIcon} alt='#'></NavIcon>
-              <NavA href='#'>Settings</NavA>
-            </NavAContainer>
-          </AccountNav>
-          <HR1></HR1>
-          <br />
-          <br />
-          <LogoutBtn onClick={logOutWithGoogle}>Log out</LogoutBtn>
-        </AccountInfo>
       )}
     </Container>// Current user profile should be here
   )

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { PostType } from '../types'
 import Post from '../shared/Post'
-import Authorization from '../shared/Authorization'
+import Authorization from '../components/Authorization'
 // import { useSomeContext } from '../shared/Context'
 
 const Container = styled.div`

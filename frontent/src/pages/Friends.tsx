@@ -7,7 +7,6 @@ import { useSomeContext } from '../shared/Context'
 const Container = styled.div`
 display: flex;
 flex-direction: column;
-height: 100%;
 width: 100%;
 padding: 20px;
 border: 1px solid #dae2db40;
@@ -23,6 +22,8 @@ width: 100%;
 
 const Friend = styled.div`
 display: flex;
+justify-content: center;
+align-items: center;
 margin-top: 8px;
 width: 100%;
 height: 200px;
@@ -35,9 +36,14 @@ box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
 `
 
 const FriendImageContainer = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
 height: 100%;
 width: 20%;
 overflow: hidden;
+border: 1px solid #dae2db22;
+padding: 8px;
 `
 
 const FriendImage = styled.img`
@@ -49,13 +55,15 @@ display: flex;
 flex-direction: column;
   width: 60%;
   height: 100%;
+  margin-left: 8px;
 `
 const FriendName = styled.div`
-
+font-size: 16px;
 `
 
 const FriendEmail = styled.div`
-
+margin-top: 8px;
+color: gray;
 `
 
 

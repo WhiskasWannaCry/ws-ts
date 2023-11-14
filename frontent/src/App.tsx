@@ -10,13 +10,12 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { validationCurrentUser } from './utils';
+import { verifyCurrentUser } from './utils';
 import Friends from './pages/Friends';
+import SearchUsers from './pages/SearchUsers';
 
-
-
+// !!! require after default imports only !!!
 const { getPosts } = require('./utils')
-
 
 const Container = styled.div`
   display: flex;
@@ -81,9 +80,10 @@ const App = () => {
   useEffect(() => {
     const userLS = JSON.parse(localStorage.getItem('currentUser')!)
  
-    validationCurrentUser(userLS).then(res => {
+    verifyCurrentUser(userLS).then(res => {
+       // data = { success: boolean, userID?:string }
       const {data} = res;
-      const {success,message} = data;
+      const {success} = data;
       if(!success) {
         const guest = {
           username: 'Guest',
@@ -92,6 +92,7 @@ const App = () => {
           email: "",
           token: "",
         }
+        const {message} = data;
         alert(message)
         setCurrentUser(guest)
         localStorage.setItem("currentUser", JSON.stringify(guest))
@@ -120,6 +121,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home posts={posts}></Home>}></Route>
           <Route path='/Contacts' element={<Contacts></Contacts>}></Route>
+          <Route path='/Search' element={<SearchUsers></SearchUsers>}></Route>
           <Route path='/friends/:userID' element={<Friends></Friends>}></Route>
         </Routes>
       </Context.Provider>

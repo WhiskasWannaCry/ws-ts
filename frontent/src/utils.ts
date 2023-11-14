@@ -27,7 +27,7 @@ export const addNewComment = async (comment: Comment, postID:string) => {
   return data
 }
 
-export const validationCurrentUser = async (userLS:UserClientType) => {
+export const verifyCurrentUser = async (userLS:UserClientType) => {
   const data = await axios.get('http://localhost:5000/validation_current_user', {params:userLS})
   return data
 }
@@ -48,3 +48,9 @@ export const getUserFriendsInfo = async (ids:Array<string>) => {
   })
   return data
 }
+
+// It doesn't work, I left that for future changes
+// export const getUsersForSearch = async () => {
+//   const data = await axios.get('http://localhost:5000/get_user_for_search')
+//   return data
+// }

@@ -42,7 +42,7 @@ const Nav = styled.nav`
   margin-top: 16px;
 `
 
-const Link = styled.a<{ $linkname: string,$activelink:string }>`
+const Link = styled.a<{ $linkname: string, $activelink: string }>`
 display: flex;
 justify-content: center;
 align-items: center;
@@ -53,20 +53,20 @@ width: 100%;
 height: 48px;
 font-weight: 500;
 border-radius: 10px;
-${({$linkname,$activelink}) => $linkname === $activelink ? (
-  "background-color:#dae2db16;"
-  ):null}
+${({ $linkname, $activelink }) => $linkname === $activelink ? (
+    "background-color:#dae2db16;"
+  ) : null}
 &:hover {
   background-color: #dae2db1f;
 }
 `
 
-const MainMenu = (props:{activeLink:string, setActiveLink:React.Dispatch<React.SetStateAction<string>>}) => {
+const MainMenu = (props: { activeLink: string, setActiveLink: React.Dispatch<React.SetStateAction<string>> }) => {
   const navigate = useNavigate()
 
-  const handleClick = (linkName:string):void => {
+  const setActiveButton = (linkName: string): void => {
     props.setActiveLink(linkName)
-    localStorage.setItem('activeLink',linkName)
+    localStorage.setItem('activeLink', linkName)
   }
 
   return (
@@ -74,8 +74,9 @@ const MainMenu = (props:{activeLink:string, setActiveLink:React.Dispatch<React.S
       <Logo onClick={() => navigate('/')}>Some Logo</Logo>
       <HR1></HR1>
       <Nav>
-        <Link $linkname="Home" $activelink={props.activeLink} onClick={() => handleClick("Home")} href='/'>Home</Link>
-        <Link $linkname="Contacts" $activelink={props.activeLink} onClick={() => handleClick('Contacts')} href='/Contacts'>Contacts</Link>
+        <Link $linkname="Home" $activelink={props.activeLink} onClick={() => setActiveButton("Home")} href='/'>Home</Link>
+        <Link $linkname="Contacts" $activelink={props.activeLink} onClick={() => setActiveButton('Contacts')} href='/Contacts'>Contacts</Link>
+        <Link $linkname="Search" $activelink={props.activeLink} onClick={() => setActiveButton("Search")} href='/Search'>Search</Link>
       </Nav>
     </Container>
   )
