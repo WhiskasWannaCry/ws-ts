@@ -13,6 +13,7 @@ import '@fontsource/roboto/700.css';
 import { verifyCurrentUser } from './utils';
 import Friends from './pages/Friends';
 import SearchUsers from './pages/SearchUsers';
+import UserProfile from './pages/UserProfile';
 
 // !!! require after default imports only !!!
 const { getPosts } = require('./utils')
@@ -20,12 +21,17 @@ const { getPosts } = require('./utils')
 const Container = styled.div`
   display: flex;
   width: 100%;
+  max-width: 1280px;
+  justify-content: space-around;
 `
 
 const HR = styled.div`
 width: 1px;
   height: 100%;
 background-color: #dae2db1d;
+@media (max-width:768px) {
+  display: none;
+}
 `
 
 const App = () => {
@@ -122,7 +128,9 @@ const App = () => {
           <Route path='/' element={<Home posts={posts}></Home>}></Route>
           <Route path='/Contacts' element={<Contacts></Contacts>}></Route>
           <Route path='/Search' element={<SearchUsers></SearchUsers>}></Route>
-          <Route path='/friends/:userID' element={<Friends></Friends>}></Route>
+
+          <Route path='/Profile/:userID' element={<UserProfile></UserProfile>}></Route>
+          <Route path='/Friends/:userID' element={<Friends></Friends>}></Route>
         </Routes>
       </Context.Provider>
     </Container>
