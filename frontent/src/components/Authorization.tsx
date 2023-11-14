@@ -348,7 +348,8 @@ const Authorization = () => {
   }
   // </Here must be sign in logic>
 
-  const toFriendsPage = () => {
+  // <Custom navigate function for navigate user to different pages>
+  const navigateTo = (pagepath:string) => {
     const userLS: UserClientType = JSON.parse(localStorage.getItem('currentUser')!)
     const { token } = userLS;
 
@@ -371,7 +372,7 @@ const Authorization = () => {
       else {
         try {
           const {userID} = data;
-          navigate(`/friends/${userID}`)
+          navigate(`/${pagepath}/${userID}`)
           console.log(data)
         } catch (e) {
           console.log(e)
@@ -379,6 +380,39 @@ const Authorization = () => {
       }
     })
   }
+  // </ Custom navigate function for navigate user to different pages>
+
+  // const toFriendsPage = () => {
+  //   const userLS: UserClientType = JSON.parse(localStorage.getItem('currentUser')!)
+  //   const { token } = userLS;
+
+  //   // If user is not found, set current user as guest and clear LS
+  //   verifyCurrentUser(userLS).then((res: any) => {
+  //     // data = { success: boolean, userID?:string }
+  //     const { data } = res;
+  //     const { success } = data;
+  //     if (!success) {
+  //       try {
+  //         setCurrentUser(guest)
+  //         localStorage.setItem("currentUser", JSON.stringify(guest))
+  //         throw new Error("UserLS error: user is not found in LS");
+  //       } catch (e: any) {
+  //         console.log(e.name + ": " + e.message);
+  //       }
+  //       return
+  //     }
+  //     // else navigate user to friends page with his _id
+  //     else {
+  //       try {
+  //         const {userID} = data;
+  //         navigate(`/friends/${userID}`)
+  //         console.log(data)
+  //       } catch (e) {
+  //         console.log(e)
+  //       }
+  //     }
+  //   })
+  // }
 
 
   return (
@@ -398,11 +432,11 @@ const Authorization = () => {
           <AccountNav>
             <NavAContainer>
               <NavIcon src={profileIcon} alt='#'></NavIcon>
-              <NavA>Your profile</NavA>
+              <NavA onClick={() => navigateTo("Profile")}>Your profile</NavA>
             </NavAContainer>
             <NavAContainer>
               <NavIcon src={friendsIcon} alt='#'></NavIcon>
-              <NavA onClick={toFriendsPage}>Friends</NavA>
+              <NavA onClick={() => navigateTo("Friends")}>Friends</NavA>
             </NavAContainer>
             <NavAContainer>
               <NavIcon src={settingsIcon} alt='#'></NavIcon>
