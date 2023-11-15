@@ -22,6 +22,11 @@ export const signInUser = async (user: UserSignInType) => {
   return data
 }
 
+export const uploadNewImage = async (objectUrl: any) => {
+  const data = await axios.post('http://localhost:5000/auth/upload_new_image', objectUrl)
+  return data
+}
+
 export const addNewComment = async (comment: Comment, postID:string) => {
   const data = await axios.post('http://localhost:5000/add_new_comment', {comment,postID})
   return data
@@ -37,13 +42,13 @@ export const addOrRemoveLike = async (userLSID:string, postID:any) => {
   return data
 }
 
-export const getUserFriendsIds = async (userLS:UserClientType) => {
-  const data = await axios.get('http://localhost:5000/get_user_friends_ids', {params:userLS})
+export const getUserFollowersIds = async (userLS:UserClientType) => {
+  const data = await axios.get('http://localhost:5000/get_user_followers_ids', {params:userLS})
   return data
 }
 
-export const getUserFriendsInfo = async (ids:Array<string>) => {
-  const data = await axios.get('http://localhost:5000/get_user_friends_info', {
+export const getUserFollowersInfo = async (ids:Array<string>) => {
+  const data = await axios.get('http://localhost:5000/get_user_followers_info', {
     params:{ids:JSON.stringify(ids)}
   })
   return data

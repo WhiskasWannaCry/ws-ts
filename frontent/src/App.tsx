@@ -11,7 +11,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { verifyCurrentUser } from './utils';
-import Friends from './pages/Friends';
+import Followers from './pages/Followers';
 import SearchUsers from './pages/SearchUsers';
 import UserProfile from './pages/UserProfile';
 
@@ -47,6 +47,8 @@ const App = () => {
     _id: '',
     email: "",
     token: "",
+    followers: [],
+    following: [],
   }) // Default guest account
 
   const [activeLink, setActiveLink] = useState<string>('Home')
@@ -97,6 +99,8 @@ const App = () => {
           _id: '',
           email: "",
           token: "",
+          followers: [],
+          following: [],
         }
         const {message} = data;
         alert(message)
@@ -130,7 +134,7 @@ const App = () => {
           <Route path='/Search' element={<SearchUsers></SearchUsers>}></Route>
 
           <Route path='/Profile/:userID' element={<UserProfile></UserProfile>}></Route>
-          <Route path='/Friends/:userID' element={<Friends></Friends>}></Route>
+          <Route path='/Followers/:userID' element={<Followers></Followers>}></Route>
         </Routes>
       </Context.Provider>
     </Container>

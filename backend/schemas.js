@@ -20,7 +20,8 @@ const user = new Schema({
   email: String,
   password: String,
   image: String,
-  friends: [String],
+  followers: [String],
+  following: [String],
 });
 
 const Posts = mongoose.model('posts', post);

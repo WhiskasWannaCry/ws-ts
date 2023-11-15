@@ -114,31 +114,36 @@ app.post('/add_or_remove_like', async (req, res) => {
   }
 });
 
-app.get('/get_user_friends_ids', async (req, res) => {
+app.post('/upload_new_image', async (req, res) => {
+  const { objectUrl } = req.body;
+  console.log(objectUrl)
+});
+
+app.get('/get_user_followers_ids', async (req, res) => {
   const userLS = req.query;
   try {
-    const userIDAndFriends = await Users.findOne(
+    const userIDAndFollowers = await Users.findOne(
       { _id: userLS._id },
-      //excluding all fields expect "_id" and "friends" fields
-      { username: 0, email: 0, password: 0, image: 0, __v: 0},
+      //excluding all fields expect "_id" and "followers" fields
+      { username: 0, email: 0, password: 0, image: 0, __v: 0, folowing: 0},
     );
-    res.json({success:true,userIDAndFriends})
+    res.json({success:true,userIDAndFollowers})
   } catch(e) {
-    res.json({success:false, message: "Server error (get user friends ids)"})
+    res.json({success:false, message: "Server error (get user followers ids)"})
     console.log(e)
   }
 });
 
-app.get('/get_user_friends_info', async (req, res) => {
+app.get('/get_user_followers_info', async (req, res) => {
   try {
     let ids = JSON.parse(req.query.ids);
         if(ids[0] === '') {
           ids = [];
         }
-    const friendsInfoArr = await Users.find({},{ password: 0, friends: 0},).where('_id').in(ids).exec();
-    res.json({success:true,friendsInfoArr})
+    const followersInfoArr = await Users.find({},{ password: 0, followers: 0, following: 0},).where('_id').in(ids).exec();
+    res.json({success:true,followersInfoArr})
   } catch(e) {
     console.log(e)
-    res.json({success:false, message: "Server error (get user friends info)"})
+    res.json({success:false, message: "Server error (get user followers info)"})
   }
 });

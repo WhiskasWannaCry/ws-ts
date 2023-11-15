@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
-import { getUserFriendsIds, getUserFriendsInfo } from '../utils'
-import { UserClientType, friendInfo } from '../types'
+import { getUserFollowersIds, getUserFollowersInfo } from '../utils'
+import { UserClientType, followerInfo } from '../types'
 import { useSomeContext } from '../shared/Context'
 
 const Container = styled.div`
@@ -14,13 +14,13 @@ margin-top: 8px;
 margin-right: 8px;
 `
 
-const FriendsField = styled.div`
+const FollowersField = styled.div`
 display: flex;
 flex-direction: column;
 width: 100%;
 `
 
-const Friend = styled.div`
+const Follower = styled.div`
 display: flex;
 justify-content: center;
 align-items: center;
@@ -35,7 +35,7 @@ border: 1px solid #dae2db22;
 box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.2) inset;
 `
 
-const FriendImageContainer = styled.div`
+const FollowerImageContainer = styled.div`
 display: flex;
 justify-content: center;
 align-items: center;
@@ -46,30 +46,30 @@ border: 1px solid #dae2db22;
 padding: 8px;
 `
 
-const FriendImage = styled.img`
+const FollowerImage = styled.img`
 width: 100%;
 `
 
-const FriendInfo = styled.div`
+const FollowerInfo = styled.div`
 display: flex;
 flex-direction: column;
   width: 60%;
   height: 100%;
   margin-left: 8px;
 `
-const FriendName = styled.div`
+const FollowerName = styled.div`
 font-size: 16px;
 `
 
-const FriendEmail = styled.div`
+const FollowerEmail = styled.div`
 margin-top: 8px;
 color: gray;
 `
 
 
-const Friends = () => {
+const Followers = () => {
   const { setCurrentUser } = useSomeContext()
-  const [friends, setFriends] = useState<friendInfo[]>([])
+  const [followers, setFollowers] = useState<followerInfo[]>([])
 
   useEffect(() => {
     const userLS = JSON.parse(localStorage.getItem('currentUser')!)
@@ -82,6 +82,8 @@ const Friends = () => {
           _id: '',
           email: "",
           token: "",
+          followers: [],
+          following: [],
         }
         // </ Default guest account>
         setCurrentUser(guest)
@@ -90,7 +92,7 @@ const Friends = () => {
         console.log(e)
       }
     }
-    getUserFriendsIds(userLS).then((res: any) => {
+    getUserFollowersIds(userLS).then((res: any) => {
       const { data } = res;
       try {
         const { success } = data;
@@ -100,9 +102,9 @@ const Friends = () => {
           alert(message)
           return
         }
-        // Else get obj with user's _id and friends from "data" key
-        const { userIDAndFriends } = data;
-        getUserFriendsInfo(userIDAndFriends.friends).then((res: any) => {
+        // Else get obj with user's _id and followers from "data" key
+        const { userIDAndFollowers } = data;
+        getUserFollowersInfo(userIDAndFollowers.followers).then((res: any) => {
           try {
             const { data } = res;
             const { success } = data;
@@ -111,9 +113,9 @@ const Friends = () => {
               alert(message)
               return
             }
-            const { friendsInfoArr } = data;
-            setFriends(friendsInfoArr)
-            console.log(friendsInfoArr)
+            const { followersInfoArr } = data;
+            setFollowers(followersInfoArr)
+            console.log(followersInfoArr)
           } catch (e) {
             console.log(e)
           }
@@ -126,24 +128,24 @@ const Friends = () => {
 
   return (
     <Container>
-      <h1>Here is user's friends page!</h1>
-      <FriendsField>
-        {friends.length ? (
-          friends.map((friend: friendInfo) => (
-            <Friend>
-              <FriendImageContainer>
-                <FriendImage src={friend.image}></FriendImage>
-              </FriendImageContainer>
-              <FriendInfo>
-                <FriendName>{friend.username}</FriendName>
-                <FriendEmail>{friend.email}</FriendEmail>
-              </FriendInfo>
-            </Friend>
+      <h1>Here is user's Followers page!</h1>
+      <FollowersField>
+        {followers.length ? (
+          followers.map((follower: followerInfo) => (
+            <Follower>
+              <FollowerImageContainer>
+                <FollowerImage src={follower.image}></FollowerImage>
+              </FollowerImageContainer>
+              <FollowerInfo>
+                <FollowerName>{follower.username}</FollowerName>
+                <FollowerEmail>{follower.email}</FollowerEmail>
+              </FollowerInfo>
+            </Follower>
           ))
-        ) : (<span>You haven't any friends</span>)}
-      </FriendsField>
+        ) : (<span>You haven't any followers</span>)}
+      </FollowersField>
     </Container>
   )
 }
 
-export default Friends;
+export default Followers;

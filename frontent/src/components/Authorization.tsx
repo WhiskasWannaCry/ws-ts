@@ -11,7 +11,7 @@ import { signInUser, verifyCurrentUser } from '../utils';
 // Images
 import profileIcon from '../images/icons/profile_icon.png'
 import settingsIcon from '../images/icons/settings.png'
-import friendsIcon from '../images/icons/friends.png'
+import followersIcon from '../images/icons/friends.png'
 import { useNavigate } from 'react-router-dom';
 
 // !!! require after default import !!!
@@ -261,6 +261,8 @@ const Authorization = () => {
     _id: '',
     email: "",
     token: "",
+    followers: [],
+    following: [],
   }
   // </ Default guest account>
 
@@ -368,7 +370,7 @@ const Authorization = () => {
         }
         return
       }
-      // else navigate user to friends page with his _id
+      // else navigate user to followers page with his _id
       else {
         try {
           const {userID} = data;
@@ -382,46 +384,13 @@ const Authorization = () => {
   }
   // </ Custom navigate function for navigate user to different pages>
 
-  // const toFriendsPage = () => {
-  //   const userLS: UserClientType = JSON.parse(localStorage.getItem('currentUser')!)
-  //   const { token } = userLS;
-
-  //   // If user is not found, set current user as guest and clear LS
-  //   verifyCurrentUser(userLS).then((res: any) => {
-  //     // data = { success: boolean, userID?:string }
-  //     const { data } = res;
-  //     const { success } = data;
-  //     if (!success) {
-  //       try {
-  //         setCurrentUser(guest)
-  //         localStorage.setItem("currentUser", JSON.stringify(guest))
-  //         throw new Error("UserLS error: user is not found in LS");
-  //       } catch (e: any) {
-  //         console.log(e.name + ": " + e.message);
-  //       }
-  //       return
-  //     }
-  //     // else navigate user to friends page with his _id
-  //     else {
-  //       try {
-  //         const {userID} = data;
-  //         navigate(`/friends/${userID}`)
-  //         console.log(data)
-  //       } catch (e) {
-  //         console.log(e)
-  //       }
-  //     }
-  //   })
-  // }
-
-
   return (
     <Container>
       {currentUser._id ? ( // if user is logined or signed up, show user account info
         <AccountInfo>
           <ImageAndName>
             <AccountImageContainer>
-              <AccountImage src={currentUser.image} alt="user image" />
+              <AccountImage src={currentUser.image} alt="user image"  onClick={() => navigateTo("Profile")} />
             </AccountImageContainer>
             <NameAndEmail>
               <AccountName>{currentUser.username}</AccountName>
@@ -435,8 +404,8 @@ const Authorization = () => {
               <NavA onClick={() => navigateTo("Profile")}>Your profile</NavA>
             </NavAContainer>
             <NavAContainer>
-              <NavIcon src={friendsIcon} alt='#'></NavIcon>
-              <NavA onClick={() => navigateTo("Friends")}>Friends</NavA>
+              <NavIcon src={followersIcon} alt='#'></NavIcon>
+              <NavA onClick={() => navigateTo("Followers")}>Followers</NavA>
             </NavAContainer>
             <NavAContainer>
               <NavIcon src={settingsIcon} alt='#'></NavIcon>

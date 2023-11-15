@@ -55,6 +55,8 @@ const AddComment = (props: { postID: string, setPostComments:Dispatch<SetStateAc
         image: "http://localhost:5000/users_images/guest.png",
         email: "",
         token: "",
+        followers: [],
+        following: [],
       })
       return
     }

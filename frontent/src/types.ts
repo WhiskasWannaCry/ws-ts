@@ -33,6 +33,8 @@ export interface UserClientType {
   token: string,
   username: string,
   image: string,
+  followers: Array<string>,
+  following: Array<string>,
 }
 export interface UserSignInType {
   email: string,
@@ -46,7 +48,7 @@ export interface UserSignUpType {
   password: string,
 }
 
-export interface friendInfo {
+export interface followerInfo {
   _id: string,
   email: string,
   username: string,

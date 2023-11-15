@@ -27,8 +27,10 @@ class authController {
       const { username, email, password, image } = req.body;
       const candidate = await Users.findOne({ email });
       if (candidate) {
-        return res
-          .json({ success: false, message: 'User is already registered' });
+        return res.json({
+          success: false,
+          message: 'User is already registered',
+        });
       }
       const hashPassword = bcrypt.hashSync(password, 7);
       const user = new Users({
@@ -39,10 +41,13 @@ class authController {
       });
       await user.save();
       const token = generateAccessToken(user._id);
+      const registeredUser = await Users.findOne({ email });
+      const { followers, following } = registeredUser;
+
       return res.json({
         success: true,
-        message: 'User is succesfull registered',
-        token,
+        message: 'User is successful logined',
+        user: { _id, email, image, username, token, followers, following },
       });
     } catch (e) {
       console.log(e);
@@ -68,12 +73,12 @@ class authController {
         });
       }
       const token = generateAccessToken(user._id);
-      const { image, username, _id } = user;
+      const { image, username, _id, followers, following } = user;
 
       return res.json({
         success: true,
         message: 'User is successful logined',
-        user: { _id, email, image, username, token },
+        user: { _id, email, image, username, token, followers, following },
       });
     } catch (e) {
       console.log(e);
