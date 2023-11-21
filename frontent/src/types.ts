@@ -54,3 +54,7 @@ export interface followerInfo {
   username: string,
   image: string,
 }
+
+export interface UserToken {
+  token: string,
+}

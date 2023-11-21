@@ -22,8 +22,12 @@ export const signInUser = async (user: UserSignInType) => {
   return data
 }
 
-export const uploadNewImage = async (objectUrl: any) => {
-  const data = await axios.post('http://localhost:5000/auth/upload_new_image', objectUrl)
+export const uploadNewImage = async (dataFromClient: any) => {
+  const data = await axios.post('http://localhost:5000/upload/new_image',dataFromClient, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   return data
 }
 
@@ -32,8 +36,8 @@ export const addNewComment = async (comment: Comment, postID:string) => {
   return data
 }
 
-export const verifyCurrentUser = async (userLS:UserClientType) => {
-  const data = await axios.get('http://localhost:5000/validation_current_user', {params:userLS})
+export const verifyCurrentUser = async (userTokenLS:string) => {
+  const data = await axios.get('http://localhost:5000/validation_current_user', {params:userTokenLS})
   return data
 }
 
@@ -42,8 +46,8 @@ export const addOrRemoveLike = async (userLSID:string, postID:any) => {
   return data
 }
 
-export const getUserFollowersIds = async (userLS:UserClientType) => {
-  const data = await axios.get('http://localhost:5000/get_user_followers_ids', {params:userLS})
+export const getUserFollowersIds = async (currentUser:UserClientType) => {
+  const data = await axios.get('http://localhost:5000/get_user_followers_ids', {params:currentUser})
   return data
 }
 

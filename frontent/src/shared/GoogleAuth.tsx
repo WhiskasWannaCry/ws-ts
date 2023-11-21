@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { UserClientType, UserType } from '../types';
+import { useSomeContext } from './Context';
 
 const LoginBtn = styled.button`
   margin-top: 8px;
@@ -47,7 +48,6 @@ const GoogleAuth = (props: { setCurrentUser: React.Dispatch<React.SetStateAction
   //             password: '',
   //           }
   //           props.setCurrentUser(newCurrentUser)
-  //           localStorage.setItem("currentUser",JSON.stringify(newCurrentUser))
   //         })
   //         .catch((err) => console.log(err));
   //     }

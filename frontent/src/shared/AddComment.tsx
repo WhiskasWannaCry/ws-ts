@@ -36,33 +36,22 @@ const AddNewCommentBtn = styled.button`
 `
 
 const AddComment = (props: { postID: string, setPostComments:Dispatch<SetStateAction<Array<Comment>>>  }) => {
-  const { currentUser, setCurrentUser } = useSomeContext()
+  const { guest, currentUser, setCurrentUser } = useSomeContext()
   const [commentText, setCommentText] = useState<string>('')
-
-  let userLS = JSON.parse(localStorage.getItem("currentUser")!)
-
 
   const newComment = async () => {
     if(!commentText) {
       alert("Incorrect comment!")
       return
     }
-    if (!userLS) {
+    if (!currentUser) {
       alert("You is not a user!")
-      setCurrentUser({
-        _id: "",
-        username: 'Guest',
-        image: "http://localhost:5000/users_images/guest.png",
-        email: "",
-        token: "",
-        followers: [],
-        following: [],
-      })
+      setCurrentUser(guest)
       return
     }
     const comment: Comment = {
       id: String(Date.now()),
-      authorID: userLS._id,
+      authorID: currentUser._id,
       text: commentText,
     }
     addNewComment(comment, props.postID).then(res => {

@@ -244,7 +244,7 @@ const LogoutBtn = styled.button`
 
 const Authorization = () => {
   const navigate = useNavigate()
-  const { currentUser, setCurrentUser } = useSomeContext();
+  const { guest, currentUser, setCurrentUser } = useSomeContext();
   const [isSignIn, setIsSignIn] = useState<Boolean>(false)
 
   // <For inputs user's information>
@@ -254,18 +254,6 @@ const Authorization = () => {
   const [repassword, setRepassword] = useState<string>("")
   // </For inputs user's information>
 
-  // <Default guest account>
-  const guest: UserClientType = {
-    username: 'Guest',
-    image: "http://localhost:5000/users_images/guest.png",
-    _id: '',
-    email: "",
-    token: "",
-    followers: [],
-    following: [],
-  }
-  // </ Default guest account>
-
   // <log out function to log out the user of google and set the profile array to null>
   const logOutWithGoogle = () => {
 
@@ -273,7 +261,6 @@ const Authorization = () => {
 
     // When user logout, return to default guest account to state and local storage
     setCurrentUser(guest)
-    localStorage.setItem("currentUser", JSON.stringify(guest))
   }
   // </ log out function to log the user out of google and set the profile array to null>
 
@@ -312,7 +299,7 @@ const Authorization = () => {
         } else {
           const { user } = res.data;
           setCurrentUser(user)
-          localStorage.setItem("currentUser", JSON.stringify(user))
+          localStorage.setItem("currentUser", JSON.stringify({token:user.token}))
         }
       } catch (e) {
         console.log(e)
@@ -330,7 +317,8 @@ const Authorization = () => {
     try {
       const user: UserSignInType = { email, password };
 
-      signInUser(user).then(({ data }) => {
+      signInUser(user).then((res) => {
+        const {data} = res;
         const { success, message } = data;
         if (!success) {
           alert(message)
@@ -338,7 +326,7 @@ const Authorization = () => {
         } else {
           const { user } = data
           setCurrentUser(user)
-          localStorage.setItem("currentUser", JSON.stringify(user))
+          localStorage.setItem("currentUser", JSON.stringify({token:user.token}))
         }
       }).catch((error: any) => {
         console.error('Error during sign-in:', error);
@@ -351,46 +339,22 @@ const Authorization = () => {
   // </Here must be sign in logic>
 
   // <Custom navigate function for navigate user to different pages>
-  const navigateTo = (pagepath:string) => {
-    const userLS: UserClientType = JSON.parse(localStorage.getItem('currentUser')!)
-    const { token } = userLS;
-
-    // If user is not found, set current user as guest and clear LS
-    verifyCurrentUser(userLS).then((res: any) => {
-      // data = { success: boolean, userID?:string }
-      const { data } = res;
-      const { success } = data;
-      if (!success) {
+  const navigateTo = (pagepath: string) => {
         try {
-          setCurrentUser(guest)
-          localStorage.setItem("currentUser", JSON.stringify(guest))
-          throw new Error("UserLS error: user is not found in LS");
-        } catch (e: any) {
-          console.log(e.name + ": " + e.message);
-        }
-        return
-      }
-      // else navigate user to followers page with his _id
-      else {
-        try {
-          const {userID} = data;
-          navigate(`/${pagepath}/${userID}`)
-          console.log(data)
+          navigate(`/${pagepath}/${currentUser._id}`)
         } catch (e) {
           console.log(e)
         }
-      }
-    })
   }
   // </ Custom navigate function for navigate user to different pages>
 
   return (
     <Container>
-      {currentUser._id ? ( // if user is logined or signed up, show user account info
+      {currentUser.token ? ( // if user is logined or signed up, show user account info
         <AccountInfo>
           <ImageAndName>
             <AccountImageContainer>
-              <AccountImage src={currentUser.image} alt="user image"  onClick={() => navigateTo("Profile")} />
+              <AccountImage src={currentUser.image} alt="user image" onClick={() => navigateTo("Profile")} />
             </AccountImageContainer>
             <NameAndEmail>
               <AccountName>{currentUser.username}</AccountName>
@@ -417,7 +381,7 @@ const Authorization = () => {
           <br />
           <LogoutBtn onClick={logOutWithGoogle}>Log out</LogoutBtn>
         </AccountInfo>
-      ):( // Or show authorization panel
+      ) : ( // Or show authorization panel
         <SignContainer>
           {isSignIn ? (
             <SignInContainer>

@@ -90,9 +90,8 @@ const Post = (props: { post: PostType }) => {
   const [likesCounter, setLikesCounter] = useState<number>(post.likes)
 
   const likePost = () => {
-    const userLS = JSON.parse(localStorage.getItem('currentUser')!)
     const {_id} = post;
-    addOrRemoveLike(userLS._id,_id).then(res => {
+    addOrRemoveLike(currentUser._id,_id).then(res => {
       const {data} = res;
       const {success} = data
       if(success) {
@@ -130,7 +129,7 @@ const Post = (props: { post: PostType }) => {
         opened: true,
         postId: post._id,
       }))}>Посмотреть все комментарии ({postComments.length})</Comments>
-      {currentUser._id ? <AddComment postID={post._id} setPostComments={setPostComments}></AddComment> : null}
+      {currentUser!._id ? <AddComment postID={post._id} setPostComments={setPostComments}></AddComment> : null}
       {modalOpened.opened && modalOpened.postId === post._id ? <OpenedPost post={post} postComments={postComments}></OpenedPost> : null}
     </Container>
   )

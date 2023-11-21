@@ -41,32 +41,27 @@ const App = () => {
     opened: false,
     postId: '',
   })
-  const [currentUser, setCurrentUser] = useState<UserClientType>({
-    username: 'Guest',
-    image: "http://localhost:5000/users_images/guest.png",
-    _id: '',
+
+  const guest = {
+    _id: "",
+    image: "",
     email: "",
     token: "",
+    username: "",
     followers: [],
     following: [],
-  }) // Default guest account
+  }
+  const [currentUser, setCurrentUser] = useState<UserClientType>(guest) // Default guest account
 
   const [activeLink, setActiveLink] = useState<string>('Home')
 
   const activeLinkLS = localStorage.getItem("activeLink")
-  const currentUserLS = localStorage.getItem("currentUser")
   useEffect(() => {
     if (!activeLinkLS) {
       localStorage.setItem("activeLink", "Home")
       setActiveLink("Home")
     } else {
       setActiveLink(activeLinkLS)
-    }
-    if (!currentUserLS) {
-      localStorage.setItem("currentUser", JSON.stringify(currentUser))
-      setCurrentUser(currentUser)
-    } else {
-      setCurrentUser(JSON.parse(currentUserLS))
     }
   }, [])
 
@@ -86,27 +81,25 @@ const App = () => {
   }, [modalOpened]);
 
   useEffect(() => {
-    const userLS = JSON.parse(localStorage.getItem('currentUser')!)
- 
-    verifyCurrentUser(userLS).then(res => {
+    let userTokenLS = JSON.parse(localStorage.getItem('currentUser')!)
+    if(!userTokenLS) {
+      localStorage.setItem("currentUser",JSON.stringify({token:"0"}))
+      userTokenLS = {token:"0"}
+    }
+    
+    verifyCurrentUser(userTokenLS).then(res => {
        // data = { success: boolean, userID?:string }
       const {data} = res;
       const {success} = data;
-      if(!success) {
-        const guest = {
-          username: 'Guest',
-          image: "http://localhost:5000/users_images/guest.png",
-          _id: '',
-          email: "",
-          token: "",
-          followers: [],
-          following: [],
-        }
+      if(!success) { 
         const {message} = data;
         alert(message)
         setCurrentUser(guest)
-        localStorage.setItem("currentUser", JSON.stringify(guest))
+        return
       }
+      const {foundUser} = data;
+      setCurrentUser(foundUser)
+      console.log(foundUser)
     })
   },[])
 
@@ -125,7 +118,7 @@ const App = () => {
   }, [])
   return (
     <Container>
-      <Context.Provider value={{ currentUser, setCurrentUser, modalOpened, setModalOpened }}>
+      <Context.Provider value={{ guest, currentUser, setCurrentUser, modalOpened, setModalOpened }}>
         <MainMenu activeLink={activeLink} setActiveLink={setActiveLink}></MainMenu>
         <HR></HR>
         <Routes>

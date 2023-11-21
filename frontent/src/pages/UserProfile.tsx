@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSomeContext } from 'src/shared/Context'
 import { uploadNewImage } from 'src/utils'
 import styled from 'styled-components'
+import uploadIcon from '../images/icons/upload_new_avatar.png'
+import { AxiosResponse } from 'axios'
+import { UserClientType } from 'src/types'
 
 const Container = styled.div`
 display: flex;
@@ -22,9 +25,6 @@ width: 100%;
 height: 300px;
 border: 1px solid #dae2db40;
 padding: 16px;
--webkit-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.26) inset;
--moz-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.26) inset;
-box-shadow: 4px 0px 32px 17px rgba(0, 0, 0, 0.26) inset;
 `
 
 const UserImageContainer = styled.div`
@@ -34,28 +34,42 @@ justify-content: center;
 align-items: center;
 height: 100%;
 width: 30%;
+background-color: #161616;
+max-width: 200px;
 overflow: hidden;
 padding: 8px;
-border: 1px solid #dae2db40;
+border: 8px solid #161616;
 `
 
+
+
+const UserImage = styled.img`
+  height: 80%;
+`
 const FileInput = styled.input.attrs({ type: 'file' })`
   display: none;
 `;
 
 const CustomFileUploadButton = styled.label`
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
+  margin-top: 8px;
   background-color: #ffffff29;
   color: #fff;
   border-radius: 4px;
+  width: 50%;
+  height: 80px;
+  font-size: 12px;
   &:hover {
     background-color: #ffffff52;
   }
 `;
 
-const UserImage = styled.img`
-  width: 100%;
+const UploadIcon = styled.img`
+width: 40%;
 `
 
 const OtherInfo = styled.div`
@@ -138,63 +152,54 @@ max-width: 400px;
 `
 
 const UserProfile = () => {
-  const userLS = JSON.parse(localStorage.getItem("currentUser")!)
-  const { currentUser, setCurrentUser } = useSomeContext()
-  const [selectedFile, setSelectedFile] = useState<any>("")
-  const [preview, setPreview] = useState<any>("")
-
+  const { guest, currentUser, setCurrentUser } = useSomeContext()
   const navigate = useNavigate()
+    
 
-    // create a preview as a side effect, whenever selected file is changed
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(undefined)
-            return
-        }
-
-        const objectUrl = URL.createObjectURL(selectedFile)
-        setPreview(objectUrl)
-
-        //In server it doesnt work now, need more logic!
-        uploadNewImage(objectUrl)
-
-        
-        // free memory when ever this component is unmounted
-        return () => URL.revokeObjectURL(objectUrl)
-    }, [selectedFile])
-
-    const onSelectFile = (e:any) => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setSelectedFile(undefined)
-            return
-        }
-
-        // I've kept this example simple by using the first image instead of multiple
-        setSelectedFile(e.target.files[0])
-    }
-
-  // if some troubles with user from userLS or other troubles with currentUser state, navigate to home page
-  useEffect(() => {
-    if (userLS.token === "") {
+  const sendFile = (file: any) => {
+    if (!currentUser) {
+      setCurrentUser(guest)
       navigate("/")
+      return
+    } else {
+      try {
+        const data = new FormData()
+        data.append('avatar',file)
+        data.append('userID',currentUser._id)
+        uploadNewImage(data).then((res:AxiosResponse<any>) => {
+          const {data} = res;
+          const success = data;
+          if(success) {
+            const {newImage} = data
+            setCurrentUser((prev) =>({
+              ...prev,
+              image:newImage}))
+          }
+          
+        })
+      } catch (e) {
+        console.log(e)
+      }
     }
-  }, [])
-
+  }
+  console.log(currentUser)
   return (
     <Container>
       <UserInfo>
         <UserImageContainer>
-          <UserImage src={currentUser.image} alt='#'></UserImage>
-          <FileInput id="file-upload-button" onChange={onSelectFile}/>
+            <UserImage src={currentUser.image} alt='#'></UserImage>
+          <FileInput id="file-upload-button" onChange={(e) => {
+            e.target.files instanceof FileList && sendFile(e.target.files[0])
+          }} />
           <CustomFileUploadButton htmlFor="file-upload-button">
-            Загрузить файл
+            <UploadIcon src={uploadIcon} alt='#'></UploadIcon>
           </CustomFileUploadButton>
         </UserImageContainer>
         <OtherInfo>
           <UserName>{currentUser.username}</UserName>
           <UserEmail>{currentUser.email}</UserEmail>
-          <UserFollowers>{currentUser.followers.length} followers</UserFollowers>
-          <UserFollowing>{currentUser.following.length} following</UserFollowing>
+          <UserFollowers>{currentUser.followers?.length} followers</UserFollowers>
+          <UserFollowing>{currentUser.following?.length} following</UserFollowing>
         </OtherInfo>
       </UserInfo>
       <CustomHR></CustomHR>

@@ -9,6 +9,8 @@ type contextType = {
   // Context of modal windows
   modalOpened: modalOpenCommentType;
   setModalOpened: Dispatch<SetStateAction<modalOpenCommentType>>;
+
+  guest: UserClientType;
 };
 
 export const Context = createContext<contextType>({} as contextType);

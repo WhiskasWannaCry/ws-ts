@@ -68,31 +68,19 @@ color: gray;
 
 
 const Followers = () => {
-  const { setCurrentUser } = useSomeContext()
+  const { guest, currentUser, setCurrentUser } = useSomeContext()
   const [followers, setFollowers] = useState<followerInfo[]>([])
-
+  console.log(currentUser)
   useEffect(() => {
-    const userLS = JSON.parse(localStorage.getItem('currentUser')!)
-    if (!userLS) {
+
+    if (!currentUser) {
       try {
-        // <Default guest account>
-        const guest: UserClientType = {
-          username: 'Guest',
-          image: "http://localhost:5000/users_images/guest.png",
-          _id: '',
-          email: "",
-          token: "",
-          followers: [],
-          following: [],
-        }
-        // </ Default guest account>
         setCurrentUser(guest)
-        localStorage.setItem("currentUser", JSON.stringify(guest))
       } catch (e) {
         console.log(e)
       }
     }
-    getUserFollowersIds(userLS).then((res: any) => {
+    getUserFollowersIds(currentUser).then((res: any) => {
       const { data } = res;
       try {
         const { success } = data;

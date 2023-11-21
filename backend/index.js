@@ -1,6 +1,8 @@
 const { Posts, Users } = require('./schemas');
-const authRouter = require('./authRouter');
+const authRouter = require('./routes/authRouter');
+const uploadRouter = require('./routes/uploadRouter')
 const jwt = require('jsonwebtoken');
+const path = require('path')
 
 require('dotenv').config();
 
@@ -10,6 +12,7 @@ const app = express();
 const cors = require('cors');
 
 const mongoose = require('mongoose');
+const { upload } = require('@testing-library/user-event/dist/upload');
 
 try {
   mongoose.connect(process.env.MONGO_URL);
@@ -21,8 +24,12 @@ try {
 app.use(cors());
 app.use(express.json());
 
+app.use('/auth', authRouter);
+app.use('/upload', uploadRouter);
+
 // Function to serve all static files
 // inside public directory.
+
 app.use(
   '/posts_images',
   express.static('C:/TypeScriptProjects/ws-ts/backend/posts_images'),
@@ -47,19 +54,20 @@ app.get('/get_posts', async (req, res) => {
   res.send(newPosts);
 });
 
-app.use('/auth', authRouter);
-
-app.get('/validation_current_user', (req, res) => {
-  const userForValidation = req.query;
+app.get('/validation_current_user', async (req, res) => {
+  const tokenForValidation = req.query;
+  console.log(tokenForValidation)
   try {
     var decoded = jwt.verify(
-      userForValidation.token,
+      tokenForValidation.token,
       process.env.JWT_SECRET_KEY,
     );
     // If token is verified, response to client success true end user's _id
     if(decoded) {
       const {id:userID} = decoded
-      res.json({success:true, userID})
+      const foundUser = await Users.findOne({"_id":userID})
+      const {_id,email,username,image,followers,following} = foundUser;
+      res.json({success:true, userID,foundUser:{_id,email,token,username,image,followers,following, token:tokenForValidation}})
     }
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
@@ -112,11 +120,6 @@ app.post('/add_or_remove_like', async (req, res) => {
     console.error(error);
     res.json({ success: false, message: 'Server error (add or remove like)' });
   }
-});
-
-app.post('/upload_new_image', async (req, res) => {
-  const { objectUrl } = req.body;
-  console.log(objectUrl)
 });
 
 app.get('/get_user_followers_ids', async (req, res) => {

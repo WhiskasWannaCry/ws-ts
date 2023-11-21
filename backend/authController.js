@@ -42,11 +42,11 @@ class authController {
       await user.save();
       const token = generateAccessToken(user._id);
       const registeredUser = await Users.findOne({ email });
-      const { followers, following } = registeredUser;
+      const { _id, followers, following } = registeredUser;
 
       return res.json({
         success: true,
-        message: 'User is successful logined',
+        message: 'User is successful registered',
         user: { _id, email, image, username, token, followers, following },
       });
     } catch (e) {
